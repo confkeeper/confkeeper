@@ -1,0 +1,21 @@
+server:
+  port: 8888
+  log_level: info
+  swagger: true
+  is_demo: false
+  zone: Asia/Shanghai
+  captcha_expire_time: 5
+admin:
+  username: admin
+  password: admin123456
+jwt:
+  secret: 123qazwsxedc456
+  expire_time: 168
+db:
+  type: sqlite3
+  database: confkeerer
+captcha:
+  length: 6
+  noise_count: 50
+confkeeper:
+  config_type:

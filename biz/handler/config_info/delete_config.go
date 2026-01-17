@@ -1,0 +1,76 @@
+package config_info
+
+import (
+	"confkeeper/biz/dal"
+	"confkeeper/biz/mw"
+	"confkeeper/biz/response"
+	"confkeeper/utils"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type DeleteReq struct {
+	ConfigId string `uri:"config_id" binding:"required,min=1,max=100"`
+}
+
+// DeleteConfig 删除配置
+//
+//	@Tags			配置
+//	@Summary		删除配置
+//	@Description	删除配置
+//	@Accept			application/json
+//	@Produce		application/json
+//	@Param			user_id	path		string	true	"配置ID"
+//	@Success		200		{object}	response.CommonResp
+//	@Security		ApiKeyAuth
+//	@router			/api/config/delete/{config_id} [DELETE]
+func DeleteConfig(c *gin.Context) {
+	req := new(DeleteReq)
+	if err := c.ShouldBindUri(req); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+	resp := new(response.CommonResp)
+
+	// 获取配置信息以检查权限
+	configInfoData, err := dal.GetConfigInfoByID(req.ConfigId)
+	if err != nil {
+		c.JSON(http.StatusOK, &response.CommonResp{
+			Code: response.Code_DBErr,
+			Msg:  "查询配置信息失败: " + err.Error(),
+		})
+		return
+	}
+	if configInfoData == nil {
+		c.JSON(http.StatusOK, &response.CommonResp{
+			Code: response.Code_Err,
+			Msg:  "配置不存在",
+		})
+		return
+	}
+
+	// 权限检查：管理员或有命名空间rw权限的用户
+	if err := utils.IsAdmin(c); err != nil {
+		// 检查用户是否有命名空间的rw权限
+		hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, configInfoData.TenantID)
+		if err != nil || !hasPermission {
+			c.JSON(http.StatusOK, &response.CommonResp{
+				Code: response.Code_Unauthorized,
+				Msg:  "没有删除配置的权限",
+			})
+			return
+		}
+	}
+
+	// 根据data_id和group_id删除所有版本的配置
+	if err = dal.DeleteConfigInfoByDataIdAndGroup(configInfoData.DataID, configInfoData.GroupID); err != nil {
+		c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_DBErr, Msg: "删除配置失败: " + err.Error()})
+		return
+	}
+
+	resp.Code = response.Code_Success
+	resp.Msg = "配置删除成功"
+
+	c.JSON(http.StatusOK, resp)
+}

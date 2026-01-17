@@ -1,0 +1,1547 @@
+definitions:
+  config_info.CloneItems:
+    properties:
+      config_id:
+        maxLength: 100
+        minLength: 1
+        type: string
+      data_id:
+        maxLength: 100
+        minLength: 1
+        type: string
+      group_id:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - config_id
+    - data_id
+    - group_id
+    type: object
+  config_info.CloneReq:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/config_info.CloneItems'
+        type: array
+      tenant_id:
+        type: string
+    type: object
+  config_info.ContentByParamsData:
+    properties:
+      config_id:
+        type: string
+      content:
+        type: string
+      data_id:
+        type: string
+      group_id:
+        type: string
+      tenant_id:
+        type: string
+      type:
+        type: string
+    type: object
+  config_info.ContentByParamsResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        $ref: '#/definitions/config_info.ContentByParamsData'
+      msg:
+        type: string
+    type: object
+  config_info.ContentData:
+    properties:
+      config_id:
+        type: string
+      content:
+        type: string
+      data_id:
+        type: string
+      group_id:
+        type: string
+      tenant_id:
+        type: string
+      type:
+        type: string
+    type: object
+  config_info.ContentResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        $ref: '#/definitions/config_info.ContentData'
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  config_info.CreateReq:
+    properties:
+      data_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      group_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      tenant_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - data_id
+    - group_id
+    - tenant_id
+    type: object
+  config_info.LanguageListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          type: string
+        type: array
+      msg:
+        type: string
+    type: object
+  config_info.ListData:
+    properties:
+      config_id:
+        type: string
+      data_id:
+        type: string
+      group_id:
+        type: string
+      type:
+        type: string
+    type: object
+  config_info.ListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/config_info.ListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  config_info.ListVersionData:
+    properties:
+      author:
+        type: string
+      config_id:
+        type: string
+      content:
+        type: string
+      create_time:
+        type: string
+      data_id:
+        type: string
+      group_id:
+        type: string
+      tenant_id:
+        type: string
+      type:
+        type: string
+      version:
+        type: string
+    type: object
+  config_info.ListVersionResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/config_info.ListVersionData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  config_info.UpdateReq:
+    properties:
+      content:
+        type: string
+      data_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      group_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      type:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+  permission.CreateReq:
+    properties:
+      action:
+        maxLength: 255
+        minLength: 1
+        type: string
+      resource:
+        maxLength: 255
+        minLength: 1
+        type: string
+      role:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - action
+    - resource
+    - role
+    type: object
+  permission.ListData:
+    properties:
+      action:
+        type: string
+      resource:
+        type: string
+      role:
+        type: string
+    type: object
+  permission.ListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/permission.ListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  response.Code:
+    enum:
+    - 200
+    - 401
+    - 500
+    - 501
+    - 502
+    - 503
+    - 504
+    type: integer
+    x-enum-varnames:
+    - Code_Success
+    - Code_Unauthorized
+    - Code_Err
+    - Code_DBErr
+    - Code_PasswordErr
+    - Code_AlreadyExists
+    - Code_CaptchaErr
+  response.CommonResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      msg:
+        type: string
+    type: object
+  role.CreateReq:
+    properties:
+      role:
+        maxLength: 255
+        minLength: 1
+        type: string
+      username:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - role
+    - username
+    type: object
+  role.ListData:
+    properties:
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  role.ListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/role.ListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  tenant.CreateReq:
+    properties:
+      tenant_desc:
+        maxLength: 255
+        minLength: 1
+        type: string
+      tenant_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      tenant_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - tenant_desc
+    - tenant_id
+    - tenant_name
+    type: object
+  tenant.ListData:
+    properties:
+      id:
+        type: string
+      tenant_desc:
+        type: string
+      tenant_id:
+        type: string
+      tenant_name:
+        type: string
+    type: object
+  tenant.ListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/tenant.ListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  user.CaptchaData:
+    properties:
+      base64_image:
+        type: string
+      id:
+        type: string
+    type: object
+  user.CaptchaResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        $ref: '#/definitions/user.CaptchaData'
+      msg:
+        type: string
+    type: object
+  user.ChangePasswdReq:
+    properties:
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - password
+    type: object
+  user.CreateReq:
+    properties:
+      username:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - username
+    type: object
+  user.InfoData:
+    properties:
+      enable:
+        type: boolean
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  user.InfoResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        $ref: '#/definitions/user.InfoData'
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  user.ListData:
+    properties:
+      enable:
+        type: boolean
+      user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  user.ListResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        items:
+          $ref: '#/definitions/user.ListData'
+        type: array
+      msg:
+        type: string
+      total:
+        type: integer
+    type: object
+  user.LoginData:
+    properties:
+      token:
+        type: string
+    type: object
+  user.LoginReq:
+    properties:
+      captcha:
+        maxLength: 10
+        minLength: 1
+        type: string
+      captcha_id:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+      remember_me:
+        type: boolean
+      username:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - captcha
+    - captcha_id
+    - password
+    - username
+    type: object
+  user.LoginResp:
+    properties:
+      code:
+        $ref: '#/definitions/response.Code'
+      data:
+        $ref: '#/definitions/user.LoginData'
+      msg:
+        type: string
+    type: object
+  user.NacosLoginReq:
+    properties:
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+      username:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.NacosLoginResp:
+    properties:
+      accessToken:
+        type: string
+    type: object
+  user.UpdateReq:
+    properties:
+      enable:
+        type: boolean
+      username:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+info:
+  contact:
+    name: buyfakett
+    url: https://github.com/buyfakett
+paths:
+  /api/config/add:
+    put:
+      consumes:
+      - application/json
+      description: 创建配置
+      parameters:
+      - description: 配置信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/config_info.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建配置
+      tags:
+      - 配置
+  /api/config/cleanup:
+    post:
+      consumes:
+      - application/json
+      description: 清理配置旧版本
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 清理配置旧版本
+      tags:
+      - 配置
+  /api/config/clone:
+    post:
+      consumes:
+      - application/json
+      description: 根据提供的配置项列表进行克隆操作。先用data_id、group_id和tenant_id查询，如果不存在则用config_id查询原配置并插入新配置，version设为1
+      parameters:
+      - description: 克隆配置请求参数
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/config_info.CloneReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+        "401":
+          description: 无权限
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+        "404":
+          description: 命名空间不存在
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 克隆配置
+      tags:
+      - 配置
+  /api/config/delete/{config_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除配置
+      parameters:
+      - description: 配置ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除配置
+      tags:
+      - 配置
+  /api/config/get:
+    get:
+      consumes:
+      - application/json
+      description: 通过tenant、dataId、group参数获取配置内容
+      parameters:
+      - description: 租户ID
+        in: query
+        name: tenant_id
+        required: true
+        type: string
+      - description: 数据ID
+        in: query
+        name: data_id
+        required: true
+        type: string
+      - description: 分组ID
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.ContentByParamsResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/config_info.ContentByParamsResp'
+        "404":
+          description: 配置不存在
+          schema:
+            $ref: '#/definitions/config_info.ContentByParamsResp'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/config_info.ContentByParamsResp'
+      summary: 通过参数获取配置内容
+      tags:
+      - 配置
+  /api/config/get/{config_id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取配置详情
+      parameters:
+      - description: 配置ID
+        in: path
+        name: config_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.ContentResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取配置详情
+      tags:
+      - 配置
+  /api/config/get_by_file:
+    get:
+      consumes:
+      - application/json
+      description: 获取配置(直接返回配置内容)
+      parameters:
+      - description: 租户
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: 数据ID
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: 分组
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 配置内容
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 获取配置(直接返回配置内容)
+      tags:
+      - 配置
+  /api/config/get_by_user:
+    get:
+      consumes:
+      - application/json
+      description: 直接使用账号获取配置
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: 租户ID
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: 数据ID
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: 分组ID
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 直接使用账号获取配置
+      tags:
+      - 配置
+  /api/config/get_version/{config_id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过config_id查询data_id和group_id，然后查询所有不同版本，按版本字段倒序返回
+      parameters:
+      - description: 配置ID
+        in: path
+        name: config_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.ListVersionResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/config_info.ListVersionResp'
+        "404":
+          description: 配置不存在
+          schema:
+            $ref: '#/definitions/config_info.ListVersionResp'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/config_info.ListVersionResp'
+      summary: 获取配置的所有版本
+      tags:
+      - 配置
+  /api/config/language_list:
+    get:
+      consumes:
+      - application/json
+      description: 配置支持语言列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.LanguageListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 配置支持语言列表
+      tags:
+      - 配置
+  /api/config/list:
+    get:
+      consumes:
+      - application/json
+      description: 配置列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 命名空间id
+        in: query
+        name: tenant_id
+        type: string
+      - description: 配置id
+        in: query
+        name: data_id
+        type: string
+      - description: 组id
+        in: query
+        name: group_id
+        type: string
+      - description: 类型
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.ListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 配置列表
+      tags:
+      - 配置
+  /api/config/update/{config_id}:
+    post:
+      consumes:
+      - application/json
+      description: 更新配置
+      parameters:
+      - description: 配置ID
+        in: path
+        name: config_id
+        required: true
+        type: string
+      - description: 配置信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/config_info.UpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新配置
+      tags:
+      - 配置
+  /api/config/update_by_file:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 更新/创建配置(文件上传)
+      parameters:
+      - description: tenant
+        in: formData
+        name: tenant
+        required: true
+        type: string
+      - description: dataId
+        in: formData
+        name: dataId
+        required: true
+        type: string
+      - description: group
+        in: formData
+        name: group
+        required: true
+        type: string
+      - description: type
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      summary: 更新/创建配置(文件上传)
+      tags:
+      - 配置
+  /api/config/update_by_user:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 使用账号更新/创建配置
+      parameters:
+      - description: token
+        in: query
+        name: accessToken
+        required: true
+        type: string
+      - description: tenant
+        in: formData
+        name: tenant
+        required: true
+        type: string
+      - description: dataId
+        in: formData
+        name: dataId
+        required: true
+        type: string
+      - description: group
+        in: formData
+        name: group
+        required: true
+        type: string
+      - description: type
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      summary: 使用账号更新/创建配置
+      tags:
+      - 配置
+  /api/is_demo:
+    get:
+      consumes:
+      - application/json
+      description: 获取demo
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取demo
+      tags:
+      - 测试
+  /api/metrics:
+    get:
+      responses: {}
+      summary: 普罗米修斯监控
+      tags:
+      - 监控
+  /api/permission/add:
+    put:
+      consumes:
+      - application/json
+      description: 为角色分配权限
+      parameters:
+      - description: 权限信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/permission.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建权限
+      tags:
+      - 权限管理
+  /api/permission/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除角色的指定权限
+      parameters:
+      - description: 角色名
+        in: query
+        name: role
+        required: true
+        type: string
+      - description: 资源路径
+        in: query
+        name: resource
+        required: true
+        type: string
+      - description: 操作类型
+        in: query
+        name: action
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除权限
+      tags:
+      - 权限管理
+  /api/permission/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取角色的权限列表
+      parameters:
+      - description: 角色名
+        in: query
+        name: role
+        required: true
+        type: string
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/permission.ListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 权限列表
+      tags:
+      - 权限管理
+  /api/ping:
+    get:
+      consumes:
+      - application/json
+      description: 测试网络接口
+      produces:
+      - application/json
+      responses: {}
+      summary: 测试网络接口
+      tags:
+      - 测试
+  /api/role/add:
+    put:
+      consumes:
+      - application/json
+      description: 创建新的角色
+      parameters:
+      - description: 角色信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/role.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建角色
+      tags:
+      - 角色管理
+  /api/role/delete/{role}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定角色及其所有权限
+      parameters:
+      - description: 角色名
+        in: path
+        name: role
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除角色
+      tags:
+      - 角色管理
+  /api/role/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有角色列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/role.ListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 角色列表
+      tags:
+      - 角色管理
+  /api/server_info:
+    get:
+      consumes:
+      - application/json
+      description: 服务信息
+      produces:
+      - application/json
+      responses: {}
+      summary: 服务信息
+      tags:
+      - 测试
+  /api/tenant/add:
+    put:
+      consumes:
+      - application/json
+      description: 创建命名空间
+      parameters:
+      - description: 创建命名空间请求参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tenant.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建命名空间
+      tags:
+      - 命名空间
+  /api/tenant/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除命名空间
+      parameters:
+      - description: 命名空间ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除命名空间
+      tags:
+      - 命名空间
+  /api/tenant/list:
+    get:
+      consumes:
+      - application/json
+      description: 命名空间列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tenant.ListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 命名空间列表
+      tags:
+      - 命名空间
+  /api/user/add:
+    put:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建用户
+      tags:
+      - 用户
+  /api/user/captcha:
+    get:
+      description: 生成登录验证码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.CaptchaResp'
+      summary: 生成验证码
+      tags:
+      - 用户
+  /api/user/change_passwd/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: 修改用户密码
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: 密码信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.ChangePasswdReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户密码
+      tags:
+      - 用户
+  /api/user/delete/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - 用户
+  /api/user/info/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: 用户信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.InfoResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户信息
+      tags:
+      - 用户
+  /api/user/list:
+    get:
+      consumes:
+      - application/json
+      description: 用户列表
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      - description: 用户名
+        in: query
+        name: username
+        type: string
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ListResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户列表
+      tags:
+      - 用户
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      parameters:
+      - description: 登录凭证
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResp'
+      summary: 用户登录
+      tags:
+      - 用户
+  /api/user/update/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: 更新用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: 更新信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户
+      tags:
+      - 用户
+  /nacos/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录(nacos兼容)
+      parameters:
+      - description: 登录凭证
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/user.NacosLoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.NacosLoginResp'
+      summary: 用户登录(nacos兼容)
+      tags:
+      - 用户
+      - nacos兼容
+  /nacos/v1/cs/configs:
+    get:
+      consumes:
+      - application/json
+      description: 获取配置(nacos兼容)
+      parameters:
+      - description: token
+        in: query
+        name: accessToken
+        required: true
+        type: string
+      - description: tenant
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: dataId
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: group
+        in: query
+        name: group
+        required: true
+        type: string
+      - description: tenant
+        in: query
+        name: tenant
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 获取配置(nacos兼容)
+      tags:
+      - 配置
+      - nacos兼容
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 更新/创建配置(nacos兼容)
+      parameters:
+      - description: token
+        in: query
+        name: accessToken
+        required: true
+        type: string
+      - description: tenant
+        in: formData
+        name: tenant
+        required: true
+        type: string
+      - description: dataId
+        in: formData
+        name: dataId
+        required: true
+        type: string
+      - description: group
+        in: formData
+        name: group
+        required: true
+        type: string
+      - description: type
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      summary: 更新/创建配置(nacos兼容)
+      tags:
+      - 配置
+      - nacos兼容
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: authorization
+    type: apiKey
+swagger: "2.0"
