@@ -72,9 +72,9 @@ func GetConfigInfoByDataIdAndGroupWithMaxVersion(dataId string, groupId string, 
 	return &configInfo, nil
 }
 
-// DeleteConfigInfoByDataIdAndGroup 根据data_id和group_id删除所有版本配置
-func DeleteConfigInfoByDataIdAndGroup(dataId string, groupId string) error {
-	return DB.Where("data_id = ? AND group_id = ?", dataId, groupId).
+// DeleteConfigInfo 根据data_id和group_id删除命名空间所有版本配置
+func DeleteConfigInfo(tentantId string, dataId string, groupId string) error {
+	return DB.Where("data_id = ? AND group_id = ? AND tenant_id = ?", dataId, groupId, tentantId).
 		Delete(&model.ConfigInfo{}).Error
 }
 
@@ -82,7 +82,7 @@ func DeleteConfigInfoByDataIdAndGroup(dataId string, groupId string) error {
 func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type, tenantId string) ([]*model.ConfigInfo, int64, error) {
 	var configInfos []*model.ConfigInfo
 
-	// where 条件组装
+	// where 条件组装（不包含 type）
 	conditions := "tenant_id = ?"
 	args := []interface{}{tenantId}
 
@@ -94,10 +94,6 @@ func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type
 		conditions += " AND group_id LIKE ?"
 		args = append(args, "%"+groupId+"%")
 	}
-	if Type != "" {
-		conditions += " AND type = ?"
-		args = append(args, Type)
-	}
 
 	// 子查询1：排序用（version=1 的 id）
 	sorterSubQuery := DB.
@@ -106,7 +102,7 @@ func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type
 		Where("version = 1 AND "+conditions, args...).
 		Group("data_id, group_id")
 
-	// 子查询2：取最大 version
+	// 子查询2：取最大 version（不能带 type 条件）
 	latestVersionSubQuery := DB.
 		Table("config_info").
 		Select("data_id, group_id, MAX(version) AS max_version").
@@ -119,42 +115,35 @@ func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type
 		Select("ci.*").
 		Joins("JOIN (?) AS lv ON lv.data_id = ci.data_id AND lv.group_id = ci.group_id AND lv.max_version = ci.version", latestVersionSubQuery).
 		Joins("JOIN (?) AS sorter ON sorter.data_id = ci.data_id AND sorter.group_id = ci.group_id", sorterSubQuery).
-		Where("ci.tenant_id = ?", tenantId).
+		Where("ci.tenant_id = ?", tenantId)
+
+	if Type != "" {
+		mainQuery = mainQuery.Where("ci.type = ?", Type)
+	}
+
+	mainQuery = mainQuery.
 		Order("sorter.base_id ASC").
 		Limit(pageSize).
 		Offset(offset)
 
-	// 计算 total
+	// 计算 total（和主查询语义一致）
 	var total int64
 	countQuery := DB.
-		Table("(?) AS sub", latestVersionSubQuery).
-		Count(&total)
-	if countQuery.Error != nil {
-		return nil, 0, countQuery.Error
+		Table("config_info AS ci").
+		Joins("JOIN (?) AS lv ON lv.data_id = ci.data_id AND lv.group_id = ci.group_id AND lv.max_version = ci.version", latestVersionSubQuery).
+		Where("ci.tenant_id = ?", tenantId)
+
+	if Type != "" {
+		countQuery = countQuery.Where("ci.type = ?", Type)
+	}
+
+	if err := countQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 
 	// 查询结果
 	if err := mainQuery.Find(&configInfos).Error; err != nil {
 		return nil, 0, err
-	}
-
-	// 👇 保证返回的条数和 total 对齐
-	if int64(len(configInfos)) < total {
-		// 补齐，直接重新从 latestVersionSubQuery 拉数据
-		var allConfigs []*model.ConfigInfo
-		err := DB.
-			Table("config_info AS ci").
-			Select("ci.*").
-			Joins("JOIN (?) AS lv ON lv.data_id = ci.data_id AND lv.group_id = ci.group_id AND lv.max_version = ci.version", latestVersionSubQuery).
-			Where("ci.tenant_id = ?", tenantId).
-			Order("ci.id ASC").
-			Limit(pageSize).
-			Offset(offset).
-			Find(&allConfigs).Error
-		if err != nil {
-			return nil, 0, err
-		}
-		return allConfigs, total, nil
 	}
 
 	return configInfos, total, nil

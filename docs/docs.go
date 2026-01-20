@@ -58,6 +58,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/config/batch_delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "批量删除配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "配置"
+                ],
+                "summary": "批量删除配置",
+                "parameters": [
+                    {
+                        "description": "批量删除请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/config_info.BatchDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.CommonResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/config/cleanup": {
             "post": {
                 "security": [
@@ -1665,6 +1704,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "config_info.BatchDeleteReq": {
+            "type": "object",
+            "required": [
+                "config_ids"
+            ],
+            "properties": {
+                "config_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "config_info.CloneItems": {
             "type": "object",
             "required": [

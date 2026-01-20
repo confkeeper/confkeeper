@@ -1,4 +1,14 @@
 definitions:
+  config_info.BatchDeleteReq:
+    properties:
+      config_ids:
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - config_ids
+    type: object
   config_info.CloneItems:
     properties:
       config_id:
@@ -496,6 +506,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 创建配置
+      tags:
+      - 配置
+  /api/config/batch_delete:
+    delete:
+      consumes:
+      - application/json
+      description: 批量删除配置
+      parameters:
+      - description: 批量删除请求
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/config_info.BatchDeleteReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除配置
       tags:
       - 配置
   /api/config/cleanup:
