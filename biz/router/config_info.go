@@ -12,6 +12,7 @@ func configInfoRoutes(apiGroup *gin.RouterGroup) {
 	{
 		configGroup.PUT("/add", mw.JWTAuthMiddleware(), hConfigInfo.CreateConfig)
 		configGroup.DELETE("/delete/:config_id", mw.JWTAuthMiddleware(), hConfigInfo.DeleteConfig)
+		configGroup.DELETE("/batch_delete", mw.JWTAuthMiddleware(), hConfigInfo.BatchDeleteConfig)
 		configGroup.POST("/update/:config_id", mw.JWTAuthMiddleware(), hConfigInfo.UpdateConfig)
 		configGroup.POST("/update_by_file", mw.JWTAuthMiddleware(true), hConfigInfo.UpdateConfigByFile)
 		configGroup.POST("/update_by_user", hConfigInfo.UpdateConfigByUser)

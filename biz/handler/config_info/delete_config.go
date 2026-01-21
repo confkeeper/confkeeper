@@ -63,8 +63,7 @@ func DeleteConfig(c *gin.Context) {
 		}
 	}
 
-	// 根据data_id和group_id删除所有版本的配置
-	if err = dal.DeleteConfigInfoByDataIdAndGroup(configInfoData.DataID, configInfoData.GroupID); err != nil {
+	if err = dal.DeleteConfigInfo(configInfoData.TenantID, configInfoData.DataID, configInfoData.GroupID); err != nil {
 		c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_DBErr, Msg: "删除配置失败: " + err.Error()})
 		return
 	}
