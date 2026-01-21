@@ -82,7 +82,7 @@ func DeleteConfigInfo(tentantId string, dataId string, groupId string) error {
 func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type, tenantId string) ([]*model.ConfigInfo, int64, error) {
 	var configInfos []*model.ConfigInfo
 
-	// where 条件组装（不包含 type）
+	// where 条件组装
 	conditions := "tenant_id = ?"
 	args := []interface{}{tenantId}
 
@@ -102,7 +102,7 @@ func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type
 		Where("version = 1 AND "+conditions, args...).
 		Group("data_id, group_id")
 
-	// 子查询2：取最大 version（不能带 type 条件）
+	// 子查询2：取最大 version
 	latestVersionSubQuery := DB.
 		Table("config_info").
 		Select("data_id, group_id, MAX(version) AS max_version").
@@ -126,7 +126,7 @@ func GetConfigInfoListWithMaxVersion(pageSize, offset int, dataId, groupId, Type
 		Limit(pageSize).
 		Offset(offset)
 
-	// 计算 total（和主查询语义一致）
+	// 计算 total
 	var total int64
 	countQuery := DB.
 		Table("config_info AS ci").
