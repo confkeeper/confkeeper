@@ -9,6 +9,7 @@ admin:
   username: admin
   password: admin123456
 jwt:
+  enable_memory: true
   secret: 123qazwsxedc456
   expire_time: 168
 db:
