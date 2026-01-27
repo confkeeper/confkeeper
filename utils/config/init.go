@@ -32,8 +32,9 @@ type DbConfig struct {
 }
 
 type JwtConfig struct {
-	Secret     string `mapstructure:"secret"`
-	ExpireTime int    `mapstructure:"expire_time"`
+	EnableMemory bool   `mapstructure:"enable_memory"`
+	Secret       string `mapstructure:"secret"`
+	ExpireTime   int    `mapstructure:"expire_time"`
 }
 
 type AdminConfig struct {
@@ -51,6 +52,15 @@ type ConfkeeperConfig struct {
 	ActionType []string `mapstructure:"action_type"`
 }
 
+type LdapConfig struct {
+	Enabled  bool   `mapstructure:"enabled"`
+	Addr     string `mapstructure:"addr"`
+	BaseDN   string `mapstructure:"base_dn"`
+	BindDN   string `mapstructure:"bind_dn"`
+	BindPass string `mapstructure:"bind_pass"`
+	TLS      bool   `mapstructure:"tls"`
+}
+
 type AppConfig struct {
 	Server     ServerConfig     `mapstructure:"server"`
 	Db         DbConfig         `mapstructure:"db"`
@@ -58,6 +68,7 @@ type AppConfig struct {
 	Admin      AdminConfig      `mapstructure:"admin"`
 	Captcha    CaptchaConfig    `mapstructure:"captcha"`
 	Confkeeper ConfkeeperConfig `mapstructure:"confkeeper"`
+	Ldap       LdapConfig       `mapstructure:"ldap"`
 }
 
 var Cfg AppConfig

@@ -2,9 +2,12 @@ package user
 
 import (
 	"confkeeper/biz/dal"
+	"confkeeper/biz/model"
 	"confkeeper/biz/response"
 	"confkeeper/utils"
 	"confkeeper/utils/captcha"
+	"confkeeper/utils/config"
+	"confkeeper/utils/ldap_client"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -57,13 +60,40 @@ func UserLogin(c *gin.Context) {
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		c.JSON(http.StatusOK, &LoginResp{Code: response.Code_DBErr, Msg: err.Error()})
-		return
-	}
-
-	if userData.Password != utils.MD5(req.Password) {
-		c.JSON(http.StatusOK, &LoginResp{Code: response.Code_PasswordErr, Msg: "密码错误"})
-		return
+		// 如果数据库没有用户，尝试LDAP登录
+		if config.Cfg.Ldap.Enabled {
+			success, _, ldapErr := ldap_client.LDAPAuth(req.Username, req.Password)
+			if success {
+				// LDAP登录成功，注册用户到数据库
+				userData = &model.User{
+					Username: req.Username,
+					Password: utils.MD5(req.Password),
+					Enable:   true,
+				}
+				if createErr := dal.CreateUser([]*model.User{userData}); createErr != nil {
+					c.JSON(http.StatusOK, &LoginResp{Code: response.Code_DBErr, Msg: "用户同步失败: " + createErr.Error()})
+					return
+				}
+				// 注册成功后继续走登录逻辑(生成token)
+			} else {
+				// LDAP登录失败
+				msg := "用户不存在"
+				if ldapErr != nil {
+					msg += " 或 " + ldapErr.Error()
+				}
+				c.JSON(http.StatusOK, &LoginResp{Code: response.Code_DBErr, Msg: msg})
+				return
+			}
+		} else {
+			c.JSON(http.StatusOK, &LoginResp{Code: response.Code_DBErr, Msg: "用户不存在或密码错误"})
+			return
+		}
+	} else {
+		// 数据库有用户，验证密码
+		if userData.Password != utils.MD5(req.Password) {
+			c.JSON(http.StatusOK, &LoginResp{Code: response.Code_PasswordErr, Msg: "密码错误"})
+			return
+		}
 	}
 
 	var token string

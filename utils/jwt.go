@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"sync"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gookit/slog"
@@ -23,6 +25,9 @@ var (
 		IdentityKey:   "userid",
 		TokenHeadName: "Bearer",
 	}
+
+	// TokenStore 用于内存存储 userid -> token
+	TokenStore sync.Map
 )
 
 // GenerateToken 生成 JWT Token
@@ -56,6 +61,12 @@ func GenerateToken(userid uint, username string, expTime ...int) (string, error)
 	if err != nil {
 		return "", err
 	}
+
+	// Store token in memory if enabled
+	if config.Cfg.Jwt.EnableMemory {
+		TokenStore.Store(int(userid), tokenString)
+	}
+
 	return tokenString, nil
 }
 
@@ -113,15 +124,36 @@ func ParseToken(tokenStr string) (jwt.MapClaims, error) {
 	}
 
 	// userid 转换为 int
+	var userid int
 	if useridVal, ok := claims["userid"]; ok {
-		if userid, ok := useridVal.(float64); ok {
-			claims["userid"] = int(userid)
+		if uid, ok := useridVal.(float64); ok {
+			userid = int(uid)
+			claims["userid"] = userid
+		} else if uid, ok := useridVal.(int); ok {
+			userid = uid
 		}
 	}
 
 	// 验证 username
 	if _, ok := claims["username"].(string); !ok {
 		return nil, fmt.Errorf("token 缺少 username")
+	}
+
+	// Verify against in-memory store if enabled
+	if config.Cfg.Jwt.EnableMemory {
+		if storedToken, ok := TokenStore.Load(userid); ok {
+			if storedTokenStr, ok := storedToken.(string); ok {
+				if storedTokenStr != tokenStr {
+					// Token mismatch (e.g. user logged in elsewhere or token revoked)
+					return nil, fmt.Errorf("令牌无效或已失效，请重新登录")
+				}
+			} else {
+				return nil, fmt.Errorf("服务器内部错误: 令牌存储格式错误")
+			}
+		} else {
+			// No token found for this user in memory (perhaps server restarted or never logged in)
+			return nil, fmt.Errorf("令牌不存在或已失效，请重新登录")
+		}
 	}
 
 	return claims, nil
