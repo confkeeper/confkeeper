@@ -20,3 +20,10 @@ captcha:
   noise_count: 50
 confkeeper:
   config_type:
+ldap:
+  enabled: false
+  addr: "127.0.0.1:389"
+  base_dn: "dc=example,dc=com"
+  bind_dn: ""
+  bind_pass: ""
+  tls: false
