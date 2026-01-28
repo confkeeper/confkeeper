@@ -12,6 +12,7 @@ jwt:
   enable_memory: true
   secret: 123qazwsxedc456
   expire_time: 168
+  max_login_sessions: 1
 db:
   type: sqlite3
   database: confkeerer
