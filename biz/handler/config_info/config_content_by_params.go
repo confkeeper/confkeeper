@@ -19,12 +19,13 @@ type ContentByParamsReq struct {
 }
 
 type ContentByParamsData struct {
-	ConfigId string `json:"config_id"`
-	TenantId string `json:"tenant_id"`
-	DataId   string `json:"data_id"`
-	GroupId  string `json:"group_id"`
-	Type     string `json:"type"`
-	Content  string `json:"content"`
+	ConfigId   string `json:"config_id"`
+	TenantId   string `json:"tenant_id"`
+	DataId     string `json:"data_id"`
+	GroupId    string `json:"group_id"`
+	Type       string `json:"type"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
 }
 
 type ContentByParamsResp struct {
@@ -107,12 +108,13 @@ func ConfigContentByParams(c *gin.Context) {
 	resp.Code = response.Code_Success
 	resp.Msg = "获取配置成功"
 	resp.Data = &ContentByParamsData{
-		ConfigId: strconv.FormatUint(uint64(configInfoData.ID), 10),
-		TenantId: configInfoData.TenantID,
-		DataId:   configInfoData.DataID,
-		GroupId:  configInfoData.GroupID,
-		Type:     configInfoData.Type,
-		Content:  configInfoData.Content,
+		ConfigId:   strconv.FormatUint(uint64(configInfoData.ID), 10),
+		TenantId:   configInfoData.TenantID,
+		DataId:     configInfoData.DataID,
+		GroupId:    configInfoData.GroupID,
+		Type:       configInfoData.Type,
+		Content:    configInfoData.Content,
+		CreateTime: configInfoData.CreateTime.Format("2006-01-02 15:04:05"),
 	}
 
 	c.JSON(http.StatusOK, resp)

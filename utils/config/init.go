@@ -32,9 +32,10 @@ type DbConfig struct {
 }
 
 type JwtConfig struct {
-	EnableMemory bool   `mapstructure:"enable_memory"`
-	Secret       string `mapstructure:"secret"`
-	ExpireTime   int    `mapstructure:"expire_time"`
+	EnableMemory     bool   `mapstructure:"enable_memory"`
+	Secret           string `mapstructure:"secret"`
+	ExpireTime       int    `mapstructure:"expire_time"`
+	MaxLoginSessions int    `mapstructure:"max_login_sessions"`
 }
 
 type AdminConfig struct {
