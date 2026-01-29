@@ -1767,6 +1767,9 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
+                "create_time": {
+                    "type": "string"
+                },
                 "data_id": {
                     "type": "string"
                 },
@@ -1881,6 +1884,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "config_id": {
+                    "type": "string"
+                },
+                "create_time": {
                     "type": "string"
                 },
                 "data_id": {

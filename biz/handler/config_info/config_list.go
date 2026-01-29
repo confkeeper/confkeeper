@@ -21,10 +21,11 @@ type ListReq struct {
 }
 
 type ListData struct {
-	ConfigId string `json:"config_id"`
-	DataId   string `json:"data_id"`
-	GroupId  string `json:"group_id"`
-	Type     string `json:"type"`
+	ConfigId   string `json:"config_id"`
+	DataId     string `json:"data_id"`
+	GroupId    string `json:"group_id"`
+	Type       string `json:"type"`
+	CreateTime string `json:"create_time"`
 }
 
 type ListResp struct {
@@ -102,10 +103,11 @@ func ConfigList(c *gin.Context) {
 	var configInfoList []*ListData
 	for _, b := range configInfos {
 		configInfoList = append(configInfoList, &ListData{
-			ConfigId: strconv.Itoa(int(b.ID)),
-			DataId:   b.DataID,
-			GroupId:  b.GroupID,
-			Type:     b.Type,
+			ConfigId:   strconv.Itoa(int(b.ID)),
+			DataId:     b.DataID,
+			GroupId:    b.GroupID,
+			Type:       b.Type,
+			CreateTime: b.CreateTime.Format("2006-01-02 15:04:05"),
 		})
 	}
 
