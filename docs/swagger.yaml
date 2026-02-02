@@ -1429,6 +1429,21 @@ paths:
       summary: 用户登录
       tags:
       - 用户
+  /api/user/logout:
+    post:
+      consumes:
+      - application/json
+      description: 用户登出，删除JWT token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CommonResp'
+      summary: 用户登出
+      tags:
+      - 用户
   /api/user/update/{user_id}:
     post:
       consumes:

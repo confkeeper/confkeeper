@@ -63,6 +63,7 @@ func JWTAuthMiddleware(isShortTerm ...bool) gin.HandlerFunc {
 		}
 		c.Set("userid", claims["userid"])
 		c.Set("username", claims["username"])
+		c.Set("token", token)
 
 		// 如果验证通过，继续处理请求
 		c.Next()

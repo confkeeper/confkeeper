@@ -1470,6 +1470,29 @@
                 }
             }
         },
+        "/api/user/logout": {
+            "post": {
+                "description": "用户登出，删除JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "用户登出",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.CommonResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/update/{user_id}": {
             "post": {
                 "security": [
