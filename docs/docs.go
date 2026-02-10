@@ -633,6 +633,20 @@ const docTemplate = `{
                         "description": "命名空间id",
                         "name": "tenant_id",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2063,6 +2077,9 @@ const docTemplate = `{
                 },
                 "msg": {
                     "type": "string"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

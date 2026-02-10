@@ -14,6 +14,8 @@ import (
 type SearchReq struct {
 	Keyword  string `form:"keyword" binding:"required"`
 	TenantId string `form:"tenant_id" binding:"omitempty"`
+	Page     int    `form:"page" binding:"omitempty,min=1"`
+	PageSize int    `form:"page_size" binding:"omitempty,min=1,max=100"`
 }
 
 type SearchMatch struct {
@@ -30,9 +32,10 @@ type SearchResultData struct {
 }
 
 type SearchResp struct {
-	Code handler.Code        `json:"code"`
-	Msg  string              `json:"msg"`
-	Data []*SearchResultData `json:"data"`
+	Code  handler.Code        `json:"code"`
+	Msg   string              `json:"msg"`
+	Total int64               `json:"total"`
+	Data  []*SearchResultData `json:"data"`
 }
 
 // SearchConfig 搜索配置
@@ -44,6 +47,8 @@ type SearchResp struct {
 //	@Produce		application/json
 //	@Param			keyword		query		string	true	"关键字"
 //	@Param			tenant_id	query		string	false	"命名空间id"
+//	@Param			page		query		int		false	"页码"	default(1)
+//	@Param			page_size	query		int		false	"每页数量"	default(10)
 //	@Success		200			{object}	SearchResp
 //	@Security		ApiKeyAuth
 //	@router			/api/config/search [GET]
@@ -72,8 +77,17 @@ func SearchConfig(c *gin.Context) {
 		}
 	}
 
-	// 调用DAL搜索
-	configs, err := dal.SearchConfigContent(req.Keyword, req.TenantId)
+	page := req.Page
+	if page == 0 {
+		page = 1
+	}
+	pageSize := req.PageSize
+	if pageSize == 0 {
+		pageSize = 10
+	}
+	offset := (page - 1) * pageSize
+
+	configs, total, err := dal.SearchConfigContent(req.Keyword, req.TenantId, offset, pageSize)
 	if err != nil {
 		c.JSON(http.StatusOK, &SearchResp{
 			Code: handler.Code_DBErr,
@@ -133,8 +147,9 @@ func SearchConfig(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &SearchResp{
-		Code: handler.Code_Success,
-		Msg:  "搜索成功",
-		Data: results,
+		Code:  handler.Code_Success,
+		Msg:   "搜索成功",
+		Total: total,
+		Data:  results,
 	})
 }
