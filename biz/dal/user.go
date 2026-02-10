@@ -85,5 +85,8 @@ func UserLogin(username string) (*model.User, error) {
 		}
 		return nil, err
 	}
+	if !user.Enable {
+		return nil, errors.New("用户已被禁用")
+	}
 	return &user, nil
 }

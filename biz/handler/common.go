@@ -10,6 +10,7 @@ const (
 	Code_PasswordErr   Code = 502
 	Code_AlreadyExists Code = 503
 	Code_CaptchaErr    Code = 504
+	Code_UserErr       Code = 505
 )
 
 type CommonResp struct {
