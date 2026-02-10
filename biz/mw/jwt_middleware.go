@@ -32,7 +32,7 @@ c.JSON(http.StatusUnauthorized, map[string]interface{}{
 		return true
 	}
 	if user == nil {
-		c.JSON(http.StatusOK, map[string]interface{}{
+c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"code": handler.Code_Unauthorized,
 			"msg":  "用户不存在",
 		})
