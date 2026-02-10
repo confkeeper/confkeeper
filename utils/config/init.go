@@ -44,8 +44,10 @@ type AdminConfig struct {
 }
 
 type CaptchaConfig struct {
-	Length     int `mapstructure:"length"`
-	NoiseCount int `mapstructure:"noise_count"`
+	Length           int    `mapstructure:"length"`
+	NoiseCount       int    `mapstructure:"noise_count"`
+	InterferenceLine int    `mapstructure:"interference_line"`
+	CharacterSet     string `mapstructure:"character_set"`
 }
 
 type ConfkeeperConfig struct {
