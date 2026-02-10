@@ -24,7 +24,7 @@ func CheckUserEnabled(c *gin.Context) bool {
 
 	user, err := dal.GetUserByID(uid)
 	if err != nil {
-		c.JSON(http.StatusOK, map[string]interface{}{
+c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"code": handler.Code_Unauthorized,
 			"msg":  "查询用户信息失败",
 		})
