@@ -4,7 +4,6 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/mw"
-	"confkeeper/biz/response"
 	"confkeeper/utils"
 	"net/http"
 	"strconv"
@@ -29,7 +28,7 @@ type ContentByParamsData struct {
 }
 
 type ContentByParamsResp struct {
-	Code response.Code        `json:"code"`
+	Code handler.Code         `json:"code"`
 	Msg  string               `json:"msg"`
 	Data *ContentByParamsData `json:"data"`
 }
@@ -63,7 +62,7 @@ func ConfigContentByParams(c *gin.Context) {
 		hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, req.TenantId)
 		if err != nil || !hasPermission {
 			c.JSON(http.StatusOK, &ContentByParamsResp{
-				Code: response.Code_Unauthorized,
+				Code: handler.Code_Unauthorized,
 				Msg:  "没有查看配置的权限",
 			})
 			return
@@ -74,14 +73,14 @@ func ConfigContentByParams(c *gin.Context) {
 	exist, err := dal.IsTenantIdExists(req.TenantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ContentByParamsResp{
-			Code: response.Code_DBErr,
+			Code: handler.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
 	}
 	if !exist {
 		c.JSON(http.StatusNotFound, &ContentByParamsResp{
-			Code: response.Code_Err,
+			Code: handler.Code_Err,
 			Msg:  "命名空间不存在",
 		})
 		return
@@ -91,21 +90,21 @@ func ConfigContentByParams(c *gin.Context) {
 	configInfoData, err := dal.GetConfigInfoByDataIdAndGroupWithMaxVersion(req.DataId, req.GroupId, req.TenantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ContentByParamsResp{
-			Code: response.Code_DBErr,
+			Code: handler.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
 	}
 	if configInfoData == nil {
 		c.JSON(http.StatusNotFound, &ContentByParamsResp{
-			Code: response.Code_Err,
+			Code: handler.Code_Err,
 			Msg:  "配置不存在",
 		})
 		return
 	}
 
 	// 返回配置详情
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "获取配置成功"
 	resp.Data = &ContentByParamsData{
 		ConfigId:   strconv.FormatUint(uint64(configInfoData.ID), 10),

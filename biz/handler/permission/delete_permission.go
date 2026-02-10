@@ -2,7 +2,7 @@ package permission
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 
@@ -25,7 +25,7 @@ type DeleteReq struct {
 //	@Param			role		query		string	true	"角色名"
 //	@Param			resource	query		string	true	"资源路径"
 //	@Param			action		query		string	true	"操作类型"
-//	@Success		200			{object}	response.CommonResp
+//	@Success		200			{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/permission/delete [DELETE]
 func DeletePermission(c *gin.Context) {
@@ -34,13 +34,13 @@ func DeletePermission(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 检查是否为管理员
 	err := utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Unauthorized,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -49,15 +49,15 @@ func DeletePermission(c *gin.Context) {
 	// 检查要删除的权限是否存在
 	exist, err := dal.IsPermissionExists(req.Role, req.Resource, req.Action)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "检查权限失败: " + err.Error(),
 		})
 		return
 	}
 	if !exist {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Err,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Err,
 			Msg:  "权限不存在",
 		})
 		return
@@ -65,11 +65,11 @@ func DeletePermission(c *gin.Context) {
 
 	// 删除权限
 	if err = dal.RemoveRolePermission(req.Role, req.Resource, req.Action); err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_DBErr, Msg: "删除权限失败: " + err.Error()})
+		c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_DBErr, Msg: "删除权限失败: " + err.Error()})
 		return
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "删除权限成功"
 
 	c.JSON(http.StatusOK, resp)

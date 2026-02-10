@@ -2,7 +2,7 @@ package config_info
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 
@@ -16,16 +16,16 @@ import (
 //	@Description	清理配置旧版本
 //	@Accept			application/json
 //	@Produce		application/json
-//	@Success		200	{object}	response.CommonResp
+//	@Success		200	{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/config/cleanup [POST]
 func ConfigCleanup(c *gin.Context) {
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 权限检查：仅管理员可执行清理操作
 	if err := utils.IsAdmin(c); err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Unauthorized,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Unauthorized,
 			Msg:  "只有管理员可以执行清理操作",
 		})
 		return
@@ -33,14 +33,14 @@ func ConfigCleanup(c *gin.Context) {
 
 	// 执行清理操作
 	if err := dal.ClearOldConfigVersions(); err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "清理配置版本失败: " + err.Error(),
 		})
 		return
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "配置版本清理成功"
 
 	c.JSON(http.StatusOK, resp)

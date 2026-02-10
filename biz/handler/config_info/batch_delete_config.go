@@ -2,8 +2,8 @@ package config_info
 
 import (
 	"confkeeper/biz/dal"
+	"confkeeper/biz/handler"
 	"confkeeper/biz/mw"
-	"confkeeper/biz/response"
 	"confkeeper/utils"
 	"net/http"
 
@@ -22,7 +22,7 @@ type BatchDeleteReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			req	body		BatchDeleteReq	true	"批量删除请求"
-//	@Success		200	{object}	response.CommonResp
+//	@Success		200	{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/config/batch_delete [DELETE]
 func BatchDeleteConfig(c *gin.Context) {
@@ -31,22 +31,22 @@ func BatchDeleteConfig(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 遍历所有配置ID
 	for _, configId := range req.ConfigIds {
 		// 获取配置信息以检查权限
 		configInfoData, err := dal.GetConfigInfoByID(configId)
 		if err != nil {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_DBErr,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_DBErr,
 				Msg:  "查询配置信息失败: " + err.Error(),
 			})
 			return
 		}
 		if configInfoData == nil {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_Err,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_Err,
 				Msg:  "配置不存在: " + configId,
 			})
 			return
@@ -57,8 +57,8 @@ func BatchDeleteConfig(c *gin.Context) {
 			// 检查用户是否有命名空间的rw权限
 			hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, configInfoData.TenantID)
 			if err != nil || !hasPermission {
-				c.JSON(http.StatusOK, &response.CommonResp{
-					Code: response.Code_Unauthorized,
+				c.JSON(http.StatusOK, &handler.CommonResp{
+					Code: handler.Code_Unauthorized,
 					Msg:  "没有删除配置的权限: " + configId,
 				})
 				return
@@ -67,15 +67,15 @@ func BatchDeleteConfig(c *gin.Context) {
 
 		// 删除配置
 		if err = dal.DeleteConfigInfo(configInfoData.TenantID, configInfoData.DataID, configInfoData.GroupID); err != nil {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_DBErr,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_DBErr,
 				Msg:  "删除配置失败: " + configId + " - " + err.Error(),
 			})
 			return
 		}
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "批量删除配置成功"
 
 	c.JSON(http.StatusOK, resp)

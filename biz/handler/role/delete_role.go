@@ -2,7 +2,7 @@ package role
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 
@@ -21,7 +21,7 @@ type DeleteReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			role	path		string	true	"角色名"
-//	@Success		200		{object}	response.CommonResp
+//	@Success		200		{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/role/delete/{role} [DELETE]
 func DeleteRole(c *gin.Context) {
@@ -30,13 +30,13 @@ func DeleteRole(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 检查是否为管理员
 	err := utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Unauthorized,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -44,11 +44,11 @@ func DeleteRole(c *gin.Context) {
 
 	// 删除角色及其所有权限
 	if err = dal.DeleteRole(req.Role); err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_DBErr, Msg: "删除角色失败: " + err.Error()})
+		c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_DBErr, Msg: "删除角色失败: " + err.Error()})
 		return
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "删除角色成功"
 
 	c.JSON(http.StatusOK, resp)

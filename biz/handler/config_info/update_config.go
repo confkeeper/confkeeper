@@ -5,7 +5,6 @@ import (
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
 	"confkeeper/biz/mw"
-	"confkeeper/biz/response"
 	"confkeeper/utils"
 	"confkeeper/utils/config"
 	"net/http"
@@ -34,7 +33,7 @@ type UpdateUriReq struct {
 //	@Produce		application/json
 //	@Param			config_id	path		string		true	"配置ID"
 //	@Param			req			body		UpdateReq	true	"配置信息"
-//	@Success		200			{object}	response.CommonResp
+//	@Success		200			{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/config/update/{config_id} [POST]
 func UpdateConfig(c *gin.Context) {
@@ -48,20 +47,20 @@ func UpdateConfig(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 获取配置信息以检查权限
 	configInfoData, err := dal.GetConfigInfoByID(uriReq.ConfigId)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
 	}
 	if configInfoData == nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Err,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Err,
 			Msg:  "配置不存在",
 		})
 		return
@@ -72,8 +71,8 @@ func UpdateConfig(c *gin.Context) {
 		// 检查用户是否有命名空间的rw权限
 		hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, configInfoData.TenantID)
 		if err != nil || !hasPermission {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_Unauthorized,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_Unauthorized,
 				Msg:  "没有更新配置的权限",
 			})
 			return
@@ -83,8 +82,8 @@ func UpdateConfig(c *gin.Context) {
 	// 获取当前data_id、group_id、tenant_id的最大版本号
 	maxVersion, err := dal.GetMaxVersionByDataIdGroupAndTenant(configInfoData.DataID, configInfoData.GroupID, configInfoData.TenantID)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
@@ -115,8 +114,8 @@ func UpdateConfig(c *gin.Context) {
 	if req.Type != nil {
 		// 检查配置文件类型是否支持
 		if !slices.Contains(config.Cfg.Confkeeper.ConfigType, *req.Type) {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_Unauthorized,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_Unauthorized,
 				Msg:  "配置文件类型不支持",
 			})
 			return
@@ -127,15 +126,15 @@ func UpdateConfig(c *gin.Context) {
 	// 创建新配置记录
 	err = dal.CreateConfigInfo([]*model.ConfigInfo{newConfig})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusInternalServerError, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "创建配置版本失败: " + err.Error(),
 		})
 		return
 	}
 
 	// 返回成功响应
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "配置信息更新成功"
 
 	c.JSON(http.StatusOK, resp)

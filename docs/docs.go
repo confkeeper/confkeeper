@@ -52,7 +52,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -91,7 +91,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -119,7 +119,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -158,31 +158,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     },
                     "400": {
                         "description": "参数错误",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     },
                     "401": {
                         "description": "无权限",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     },
                     "404": {
                         "description": "命名空间不存在",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -219,7 +219,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -642,7 +642,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -702,7 +702,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -769,7 +769,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -833,7 +833,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -884,7 +884,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -990,7 +990,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1027,7 +1027,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1126,7 +1126,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1163,7 +1163,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1246,7 +1246,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1312,7 +1312,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1349,7 +1349,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1499,7 +1499,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1545,7 +1545,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1719,7 +1719,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.CommonResp"
+                            "$ref": "#/definitions/handler.CommonResp"
                         }
                     }
                 }
@@ -1811,7 +1811,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "$ref": "#/definitions/config_info.ContentByParamsData"
@@ -1848,7 +1848,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "$ref": "#/definitions/config_info.ContentData"
@@ -1890,7 +1890,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -1927,7 +1927,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -1979,7 +1979,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -2015,6 +2015,38 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "handler.Code": {
+            "type": "integer",
+            "enum": [
+                200,
+                401,
+                500,
+                501,
+                502,
+                503,
+                504
+            ],
+            "x-enum-varnames": [
+                "Code_Success",
+                "Code_Unauthorized",
+                "Code_Err",
+                "Code_DBErr",
+                "Code_PasswordErr",
+                "Code_AlreadyExists",
+                "Code_CaptchaErr"
+            ]
+        },
+        "handler.CommonResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2061,7 +2093,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -2074,38 +2106,6 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
-                }
-            }
-        },
-        "response.Code": {
-            "type": "integer",
-            "enum": [
-                200,
-                401,
-                500,
-                501,
-                502,
-                503,
-                504
-            ],
-            "x-enum-varnames": [
-                "Code_Success",
-                "Code_Unauthorized",
-                "Code_Err",
-                "Code_DBErr",
-                "Code_PasswordErr",
-                "Code_AlreadyExists",
-                "Code_CaptchaErr"
-            ]
-        },
-        "response.CommonResp": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "$ref": "#/definitions/response.Code"
-                },
-                "msg": {
-                    "type": "string"
                 }
             }
         },
@@ -2143,7 +2143,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -2205,7 +2205,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -2236,7 +2236,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "$ref": "#/definitions/user.CaptchaData"
@@ -2290,7 +2290,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "$ref": "#/definitions/user.InfoData"
@@ -2321,7 +2321,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "type": "array",
@@ -2383,7 +2383,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/response.Code"
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "$ref": "#/definitions/user.LoginData"

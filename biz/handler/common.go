@@ -1,4 +1,4 @@
-package response
+package handler
 
 type Code int32
 
@@ -11,3 +11,8 @@ const (
 	Code_AlreadyExists Code = 503
 	Code_CaptchaErr    Code = 504
 )
+
+type CommonResp struct {
+	Code Code   `json:"code"`
+	Msg  string `json:"msg"`
+}

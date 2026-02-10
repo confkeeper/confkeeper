@@ -2,7 +2,7 @@ package user
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 	"strconv"
@@ -27,7 +27,7 @@ type ChangePasswdUriReq struct {
 //	@Produce		application/json
 //	@Param			user_id	path		string			true	"用户ID"
 //	@Param			req		body		ChangePasswdReq	true	"密码信息"
-//	@Success		200		{object}	response.CommonResp
+//	@Success		200		{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/user/change_passwd/{user_id} [POST]
 func ChangePasswd(c *gin.Context) {
@@ -41,14 +41,14 @@ func ChangePasswd(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	userId, _ := strconv.Atoi(uriReq.UserId)
 	tokenUserId, _ := utils.GetUseridFromContext(c)
 
 	if userId != tokenUserId {
 		if tokenUserId != 1 {
-			c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_Unauthorized, Msg: "不能修改别人的密码"})
+			c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_Unauthorized, Msg: "不能修改别人的密码"})
 			return
 		}
 	}
@@ -56,15 +56,15 @@ func ChangePasswd(c *gin.Context) {
 	// 获取用户信息
 	userData, err := dal.GetUserByID(userId)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "数据库查询错误: " + err.Error(),
 		})
 		return
 	}
 	if userData == nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "用户未找到",
 		})
 		return
@@ -75,15 +75,15 @@ func ChangePasswd(c *gin.Context) {
 	// 方法保存数据
 	err = dal.UpdateUser(userData)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusInternalServerError, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "修改密码失败: " + err.Error(),
 		})
 		return
 	}
 
 	// 返回成功响应
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "密码更新成功"
 
 	c.JSON(http.StatusOK, resp)
