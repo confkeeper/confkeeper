@@ -1,7 +1,7 @@
 package user
 
 import (
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils/captcha"
 	"net/http"
 
@@ -11,9 +11,9 @@ import (
 
 // CaptchaResp 验证码响应
 type CaptchaResp struct {
-	Code response.Code `json:"code"`
-	Msg  string        `json:"msg"`
-	Data *CaptchaData  `json:"data"`
+	Code handler.Code `json:"code"`
+	Msg  string       `json:"msg"`
+	Data *CaptchaData `json:"data"`
 }
 
 // CaptchaData 验证码数据
@@ -36,14 +36,14 @@ func GenerateCaptcha(c *gin.Context) {
 	id, base64Image, _, err := NewCaptcha.Generate()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &CaptchaResp{
-			Code: response.Code_Err,
+			Code: handler.Code_Err,
 			Msg:  "生成验证码失败",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, &CaptchaResp{
-		Code: response.Code_Success,
+		Code: handler.Code_Success,
 		Msg:  "生成验证码成功",
 		Data: &CaptchaData{
 			ID:          id,

@@ -2,8 +2,8 @@ package tenant
 
 import (
 	"confkeeper/biz/dal"
+	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
-	"confkeeper/biz/response"
 	"confkeeper/utils"
 	"net/http"
 
@@ -24,7 +24,7 @@ type CreateReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			request	body		CreateReq	true	"创建命名空间请求参数"
-//	@Success		200		{object}	response.CommonResp
+//	@Success		200		{object}	handler.CommonResp
 //	@Security		ApiKeyAuth
 //	@router			/api/tenant/add [PUT]
 func CreateTenant(c *gin.Context) {
@@ -33,13 +33,13 @@ func CreateTenant(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(response.CommonResp)
+	resp := new(handler.CommonResp)
 
 	// 检查是否为管理员
 	err := utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_Unauthorized,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -48,15 +48,15 @@ func CreateTenant(c *gin.Context) {
 	// 检查命名空间是否已存在
 	exist, err := dal.IsTenantIdExists(req.TenantId)
 	if err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_DBErr,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_DBErr,
 			Msg:  "检查命名空间失败: " + err.Error(),
 		})
 		return
 	}
 	if exist {
-		c.JSON(http.StatusOK, &response.CommonResp{
-			Code: response.Code_AlreadyExists,
+		c.JSON(http.StatusOK, &handler.CommonResp{
+			Code: handler.Code_AlreadyExists,
 			Msg:  "该命名空间已存在",
 		})
 		return
@@ -69,11 +69,11 @@ func CreateTenant(c *gin.Context) {
 	}
 
 	if err = dal.CreateTenant([]*model.TenantInfo{t}); err != nil {
-		c.JSON(http.StatusOK, &response.CommonResp{Code: response.Code_DBErr, Msg: "命名空间新建失败: " + err.Error()})
+		c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_DBErr, Msg: "命名空间新建失败: " + err.Error()})
 		return
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "新建命名空间成功"
 
 	c.JSON(http.StatusOK, resp)

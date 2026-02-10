@@ -1,7 +1,7 @@
 package user
 
 import (
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"confkeeper/utils/config"
 	"net/http"
@@ -16,7 +16,7 @@ import (
 //	@Description	用户登出，删除JWT token
 //	@Accept			application/json
 //	@Produce		application/json
-//	@Success		200	{object}	response.CommonResp
+//	@Success		200	{object}	handler.CommonResp
 //	@router			/api/user/logout [POST]
 func UserLogout(c *gin.Context) {
 	// 如果启用了内存存储，则删除token
@@ -25,8 +25,8 @@ func UserLogout(c *gin.Context) {
 		tokenString, _ := c.Get("token")
 		userid, err := utils.GetUseridFromContext(c)
 		if err != nil {
-			c.JSON(http.StatusOK, &response.CommonResp{
-				Code: response.Code_Err,
+			c.JSON(http.StatusOK, &handler.CommonResp{
+				Code: handler.Code_Err,
 				Msg:  "获取用户信息失败: " + err.Error(),
 			})
 			return
@@ -56,8 +56,8 @@ func UserLogout(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, &response.CommonResp{
-		Code: response.Code_Success,
+	c.JSON(http.StatusOK, &handler.CommonResp{
+		Code: handler.Code_Success,
 		Msg:  "登出成功",
 	})
 }

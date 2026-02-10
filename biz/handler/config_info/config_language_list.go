@@ -1,7 +1,7 @@
 package config_info
 
 import (
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils/config"
 	"net/http"
 
@@ -9,9 +9,9 @@ import (
 )
 
 type LanguageListResp struct {
-	Code response.Code `json:"code"`
-	Msg  string        `json:"msg"`
-	Data []string      `json:"data"`
+	Code handler.Code `json:"code"`
+	Msg  string       `json:"msg"`
+	Data []string     `json:"data"`
 }
 
 // ConfigLanguageList 配置支持语言列表
@@ -27,7 +27,7 @@ type LanguageListResp struct {
 func ConfigLanguageList(c *gin.Context) {
 	resp := new(LanguageListResp)
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "获取成功"
 	resp.Data = config.Cfg.Confkeeper.ConfigType
 

@@ -2,7 +2,7 @@ package tenant
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"net/http"
 	"strconv"
 
@@ -22,10 +22,10 @@ type ListData struct {
 }
 
 type ListResp struct {
-	Code  response.Code `json:"code"`
-	Msg   string        `json:"msg"`
-	Total int64         `json:"total"`
-	Data  []*ListData   `json:"data"`
+	Code  handler.Code `json:"code"`
+	Msg   string       `json:"msg"`
+	Total int64        `json:"total"`
+	Data  []*ListData  `json:"data"`
 }
 
 // TenantList 命名空间列表
@@ -58,7 +58,7 @@ func TenantList(c *gin.Context) {
 	tenants, total, err := dal.GetTenantList(int(req.PageSize), int(offset))
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: response.Code_DBErr,
+			Code: handler.Code_DBErr,
 			Msg:  "获取命名空间列表失败: " + err.Error(),
 		})
 		return
@@ -74,7 +74,7 @@ func TenantList(c *gin.Context) {
 		})
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "获取成功"
 	resp.Total = total
 	resp.Data = tenantList

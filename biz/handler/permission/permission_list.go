@@ -2,7 +2,7 @@ package permission
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/response"
+	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 
@@ -22,10 +22,10 @@ type ListData struct {
 }
 
 type ListResp struct {
-	Code  response.Code `json:"code"`
-	Msg   string        `json:"msg"`
-	Total int64         `json:"total"`
-	Data  []*ListData   `json:"data"`
+	Code  handler.Code `json:"code"`
+	Msg   string       `json:"msg"`
+	Total int64        `json:"total"`
+	Data  []*ListData  `json:"data"`
 }
 
 // PermissionList 获取权限列表
@@ -53,7 +53,7 @@ func PermissionList(c *gin.Context) {
 	err := utils.IsAdmin(c)
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: response.Code_Unauthorized,
+			Code: handler.Code_Unauthorized,
 			Msg:  err.Error(),
 		})
 		return
@@ -71,7 +71,7 @@ func PermissionList(c *gin.Context) {
 	permissions, total, err := dal.GetRolePermissionsList(req.Role, int(offset), int(req.PageSize))
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: response.Code_DBErr,
+			Code: handler.Code_DBErr,
 			Msg:  "获取权限列表失败: " + err.Error(),
 		})
 		return
@@ -86,7 +86,7 @@ func PermissionList(c *gin.Context) {
 		})
 	}
 
-	resp.Code = response.Code_Success
+	resp.Code = handler.Code_Success
 	resp.Msg = "获取成功"
 	resp.Total = total
 	resp.Data = permissionList
