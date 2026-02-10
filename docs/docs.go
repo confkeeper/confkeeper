@@ -602,6 +602,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/config/search": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "搜索配置内容，返回匹配行及上下文",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "配置"
+                ],
+                "summary": "搜索配置内容",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "keyword",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间id",
+                        "name": "tenant_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/config_info.SearchResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/config/update/{config_id}": {
             "post": {
                 "security": [
@@ -1995,6 +2038,57 @@ const docTemplate = `{
                 }
             }
         },
+        "config_info.SearchMatch": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "line_no": {
+                    "type": "integer"
+                }
+            }
+        },
+        "config_info.SearchResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/config_info.SearchResultData"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.SearchResultData": {
+            "type": "object",
+            "properties": {
+                "config_id": {
+                    "type": "integer"
+                },
+                "data_id": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
+                },
+                "matches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/config_info.SearchMatch"
+                    }
+                },
+                "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.UpdateReq": {
             "type": "object",
             "properties": {
@@ -2022,21 +2116,25 @@ const docTemplate = `{
             "type": "integer",
             "enum": [
                 200,
+                400,
                 401,
                 500,
                 501,
                 502,
                 503,
-                504
+                504,
+                505
             ],
             "x-enum-varnames": [
                 "Code_Success",
+                "Code_ParamErr",
                 "Code_Unauthorized",
                 "Code_Err",
                 "Code_DBErr",
                 "Code_PasswordErr",
                 "Code_AlreadyExists",
-                "Code_CaptchaErr"
+                "Code_CaptchaErr",
+                "Code_UserErr"
             ]
         },
         "handler.CommonResp": {

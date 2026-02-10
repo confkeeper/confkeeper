@@ -179,6 +179,39 @@ definitions:
       total:
         type: integer
     type: object
+  config_info.SearchMatch:
+    properties:
+      content:
+        type: string
+      line_no:
+        type: integer
+    type: object
+  config_info.SearchResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      data:
+        items:
+          $ref: '#/definitions/config_info.SearchResultData'
+        type: array
+      msg:
+        type: string
+    type: object
+  config_info.SearchResultData:
+    properties:
+      config_id:
+        type: integer
+      data_id:
+        type: string
+      group_id:
+        type: string
+      matches:
+        items:
+          $ref: '#/definitions/config_info.SearchMatch'
+        type: array
+      tenant_id:
+        type: string
+    type: object
   config_info.UpdateReq:
     properties:
       content:
@@ -199,21 +232,25 @@ definitions:
   handler.Code:
     enum:
     - 200
+    - 400
     - 401
     - 500
     - 501
     - 502
     - 503
     - 504
+    - 505
     type: integer
     x-enum-varnames:
     - Code_Success
+    - Code_ParamErr
     - Code_Unauthorized
     - Code_Err
     - Code_DBErr
     - Code_PasswordErr
     - Code_AlreadyExists
     - Code_CaptchaErr
+    - Code_UserErr
   handler.CommonResp:
     properties:
       code:
@@ -862,6 +899,33 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 配置列表
+      tags:
+      - 配置
+  /api/config/search:
+    get:
+      consumes:
+      - application/json
+      description: 搜索配置内容，返回匹配行及上下文
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 命名空间id
+        in: query
+        name: tenant_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.SearchResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 搜索配置内容
       tags:
       - 配置
   /api/config/update/{config_id}:

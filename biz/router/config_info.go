@@ -25,5 +25,6 @@ func configInfoRoutes(apiGroup *gin.RouterGroup) {
 		configGroup.POST("/clone", mw.JWTAuthMiddleware(), hConfigInfo.ConfigClone)
 		configGroup.POST("/cleanup", mw.JWTAuthMiddleware(), hConfigInfo.ConfigCleanup)
 		configGroup.GET("/language_list", hConfigInfo.ConfigLanguageList)
+		configGroup.GET("/search", mw.JWTAuthMiddleware(), hConfigInfo.SearchConfig)
 	}
 }
