@@ -48,6 +48,11 @@ func NacosGetConfig(c *gin.Context) {
 		return
 	}
 
+	// 检查用户是否启用
+	if mw.CheckUserEnabled(c) {
+		return
+	}
+
 	// 权限检查：管理员或有命名空间r/rw权限的用户
 	if err := utils.IsAdmin(c); err != nil {
 		// 检查用户是否有命名空间的r或rw权限
