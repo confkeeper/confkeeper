@@ -203,3 +203,32 @@ func ClearOldConfigVersions() error {
 		return nil
 	})
 }
+
+// SearchConfigContent 搜索配置内容
+func SearchConfigContent(keyword string, tenantId string, offset, limit int) ([]*model.ConfigInfo, int64, error) {
+	var configInfos []*model.ConfigInfo
+	var total int64
+
+	// 子查询：获取每个配置的最新版本
+	latestVersionSubQuery := DB.Model(&model.ConfigInfo{}).
+		Select("data_id, group_id, tenant_id, MAX(version) as max_version").
+		Group("data_id, group_id, tenant_id")
+
+	// 基础查询
+	query := DB.Table("config_info as ci").
+		Joins("JOIN (?) as lv ON ci.data_id = lv.data_id AND ci.group_id = lv.group_id AND ci.tenant_id = lv.tenant_id AND ci.version = lv.max_version", latestVersionSubQuery).
+		Where("ci.content LIKE ?", "%"+keyword+"%")
+
+	if tenantId != "" {
+		query = query.Where("ci.tenant_id = ?", tenantId)
+	}
+
+	// 计算总数
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 分页查询
+	err := query.Offset(offset).Limit(limit).Find(&configInfos).Error
+	return configInfos, total, err
+}
