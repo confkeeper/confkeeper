@@ -82,16 +82,11 @@ func GetAllUser() ([]*model.User, int64, error) {
 
 	query := DB.Model(&model.User{})
 
-	var total int64
-	if err := query.Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
 	if err := query.Order("id").Find(&users).Error; err != nil {
 		return nil, 0, err
 	}
 
-	return users, total, nil
+	return users, int64(len(users)), nil
 }
 
 func UserLogin(username string) (*model.User, error) {
