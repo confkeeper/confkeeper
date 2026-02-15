@@ -513,6 +513,29 @@ definitions:
       accessToken:
         type: string
     type: object
+  user.SyncLDAPUsersData:
+    properties:
+      synced_users:
+        description: 同步的用户数量
+        type: integer
+      total_ldap_users:
+        description: LDAP中的总用户数量
+        type: integer
+    type: object
+  user.SyncLDAPUsersResp:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/handler.Code'
+        description: 响应码
+      data:
+        allOf:
+        - $ref: '#/definitions/user.SyncLDAPUsersData'
+        description: 响应数据
+      msg:
+        description: 响应消息
+        type: string
+    type: object
   user.UpdateReq:
     properties:
       enable:
@@ -1518,6 +1541,21 @@ paths:
           schema:
             $ref: '#/definitions/handler.CommonResp'
       summary: 用户登出
+      tags:
+      - 用户
+  /api/user/sync-ldap:
+    post:
+      consumes:
+      - application/json
+      description: 从LDAP同步所有用户到本地数据库，仅添加本地不存在的用户
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.SyncLDAPUsersResp'
+      summary: 同步LDAP用户
       tags:
       - 用户
   /api/user/update/{user_id}:

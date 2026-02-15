@@ -1562,6 +1562,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/sync-ldap": {
+            "post": {
+                "description": "从LDAP同步所有用户到本地数据库，仅添加本地不存在的用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "同步LDAP用户",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.SyncLDAPUsersResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/update/{user_id}": {
             "post": {
                 "security": [
@@ -2531,6 +2554,44 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "accessToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.SyncLDAPUsersData": {
+            "type": "object",
+            "properties": {
+                "synced_users": {
+                    "description": "同步的用户数量",
+                    "type": "integer"
+                },
+                "total_ldap_users": {
+                    "description": "LDAP中的总用户数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "user.SyncLDAPUsersResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "响应码",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/handler.Code"
+                        }
+                    ]
+                },
+                "data": {
+                    "description": "响应数据",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user.SyncLDAPUsersData"
+                        }
+                    ]
+                },
+                "msg": {
+                    "description": "响应消息",
                     "type": "string"
                 }
             }
