@@ -98,7 +98,7 @@ func UserLogin(c *gin.Context) {
 					// LDAP登录成功，更新用户密码
 					userData.Password = utils.MD5(req.Password)
 					if updateErr := dal.UpdateUser(userData); updateErr != nil {
-						c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "密码更新失败: " + updateErr.Error()})
+c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "密码更新失败"})
 						return
 					}
 					// 更新成功后继续走登录逻辑(生成token)
