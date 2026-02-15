@@ -1,4 +1,11 @@
 definitions:
+  config_info.BatchDeleteConfigResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
   config_info.BatchDeleteReq:
     properties:
       config_ids:
@@ -35,6 +42,20 @@ definitions:
           $ref: '#/definitions/config_info.CloneItems'
         type: array
       tenant_id:
+        type: string
+    type: object
+  config_info.ConfigCleanupResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  config_info.ConfigCloneResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
         type: string
     type: object
   config_info.ContentByParamsData:
@@ -86,8 +107,13 @@ definitions:
         $ref: '#/definitions/config_info.ContentData'
       msg:
         type: string
-      total:
-        type: integer
+    type: object
+  config_info.CreateConfigResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   config_info.CreateReq:
     properties:
@@ -107,6 +133,13 @@ definitions:
     - data_id
     - group_id
     - tenant_id
+    type: object
+  config_info.DeleteConfigResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   config_info.LanguageListResp:
     properties:
@@ -179,6 +212,13 @@ definitions:
       total:
         type: integer
     type: object
+  config_info.NacosUpdateConfigResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
   config_info.SearchMatch:
     properties:
       content:
@@ -212,6 +252,27 @@ definitions:
           $ref: '#/definitions/config_info.SearchMatch'
         type: array
       tenant_id:
+        type: string
+    type: object
+  config_info.UpdateConfigByFileResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  config_info.UpdateConfigByUserResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  config_info.UpdateConfigResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
         type: string
     type: object
   config_info.UpdateReq:
@@ -253,7 +314,7 @@ definitions:
     - Code_AlreadyExists
     - Code_CaptchaErr
     - Code_UserErr
-  handler.CommonResp:
+  permission.CreatePermissionResp:
     properties:
       code:
         $ref: '#/definitions/handler.Code'
@@ -278,6 +339,13 @@ definitions:
     - action
     - resource
     - role
+    type: object
+  permission.DeletePermissionResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   permission.ListData:
     properties:
@@ -314,6 +382,20 @@ definitions:
     required:
     - role
     - username
+    type: object
+  role.CreateRoleResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  role.DeleteRoleResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   role.ListData:
     properties:
@@ -353,6 +435,20 @@ definitions:
     - tenant_desc
     - tenant_id
     - tenant_name
+    type: object
+  tenant.CreateTenantResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  tenant.DeleteTenantResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   tenant.ListData:
     properties:
@@ -403,6 +499,13 @@ definitions:
     required:
     - password
     type: object
+  user.ChangePasswordResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
   user.CreateReq:
     properties:
       username:
@@ -411,6 +514,20 @@ definitions:
         type: string
     required:
     - username
+    type: object
+  user.CreateUserResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
+  user.DeleteUserResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
     type: object
   user.InfoData:
     properties:
@@ -429,8 +546,6 @@ definitions:
         $ref: '#/definitions/user.InfoData'
       msg:
         type: string
-      total:
-        type: integer
     type: object
   user.ListData:
     properties:
@@ -494,6 +609,13 @@ definitions:
       msg:
         type: string
     type: object
+  user.LogoutResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
   user.NacosLoginReq:
     properties:
       password:
@@ -545,6 +667,13 @@ definitions:
         minLength: 1
         type: string
     type: object
+  user.UpdateUserResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
 info:
   contact:
     name: buyfakett
@@ -568,7 +697,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.CreateConfigResp'
       security:
       - ApiKeyAuth: []
       summary: 创建配置
@@ -592,7 +721,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.BatchDeleteConfigResp'
       security:
       - ApiKeyAuth: []
       summary: 批量删除配置
@@ -609,7 +738,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCleanupResp'
       security:
       - ApiKeyAuth: []
       summary: 清理配置旧版本
@@ -633,23 +762,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCloneResp'
         "400":
           description: 参数错误
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCloneResp'
         "401":
           description: 无权限
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCloneResp'
         "404":
           description: 命名空间不存在
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCloneResp'
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.ConfigCloneResp'
       security:
       - ApiKeyAuth: []
       summary: 克隆配置
@@ -663,7 +792,7 @@ paths:
       parameters:
       - description: 配置ID
         in: path
-        name: user_id
+        name: config_id
         required: true
         type: string
       produces:
@@ -672,7 +801,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.DeleteConfigResp'
       security:
       - ApiKeyAuth: []
       summary: 删除配置
@@ -986,7 +1115,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.UpdateConfigResp'
       security:
       - ApiKeyAuth: []
       summary: 更新配置
@@ -1029,7 +1158,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.UpdateConfigByFileResp'
       summary: 更新/创建配置(文件上传)
       tags:
       - 配置
@@ -1039,9 +1168,14 @@ paths:
       - application/x-www-form-urlencoded
       description: 使用账号更新/创建配置
       parameters:
-      - description: token
-        in: query
-        name: accessToken
+      - description: 用户名
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
         required: true
         type: string
       - description: tenant
@@ -1075,7 +1209,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.UpdateConfigByUserResp'
       summary: 使用账号更新/创建配置
       tags:
       - 配置
@@ -1114,7 +1248,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/permission.CreatePermissionResp'
       security:
       - ApiKeyAuth: []
       summary: 创建权限
@@ -1147,7 +1281,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/permission.DeletePermissionResp'
       security:
       - ApiKeyAuth: []
       summary: 删除权限
@@ -1215,7 +1349,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/role.CreateRoleResp'
       security:
       - ApiKeyAuth: []
       summary: 创建角色
@@ -1238,7 +1372,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/role.DeleteRoleResp'
       security:
       - ApiKeyAuth: []
       summary: 删除角色
@@ -1301,7 +1435,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/tenant.CreateTenantResp'
       security:
       - ApiKeyAuth: []
       summary: 创建命名空间
@@ -1324,7 +1458,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/tenant.DeleteTenantResp'
       security:
       - ApiKeyAuth: []
       summary: 删除命名空间
@@ -1376,7 +1510,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/user.CreateUserResp'
       security:
       - ApiKeyAuth: []
       summary: 创建用户
@@ -1418,7 +1552,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/user.ChangePasswordResp'
       security:
       - ApiKeyAuth: []
       summary: 修改用户密码
@@ -1441,7 +1575,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/user.DeleteUserResp'
       security:
       - ApiKeyAuth: []
       summary: 删除用户
@@ -1539,7 +1673,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/user.LogoutResp'
       summary: 用户登出
       tags:
       - 用户
@@ -1581,7 +1715,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/user.UpdateUserResp'
       security:
       - ApiKeyAuth: []
       summary: 更新用户
@@ -1701,7 +1835,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonResp'
+            $ref: '#/definitions/config_info.NacosUpdateConfigResp'
       summary: 更新/创建配置(nacos兼容)
       tags:
       - 配置

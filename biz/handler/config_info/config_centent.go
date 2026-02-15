@@ -24,10 +24,8 @@ type ContentData struct {
 }
 
 type ContentResp struct {
-	Code  handler.Code `json:"code"`
-	Msg   string       `json:"msg"`
-	Total int64        `json:"total"`
-	Data  *ContentData `json:"data"`
+	handler.CommonResp
+	Data *ContentData `json:"data"`
 }
 
 // ConfigContent 获取配置详情
@@ -53,15 +51,19 @@ func ConfigContent(c *gin.Context) {
 	configInfoData, err := dal.GetConfigInfoByID(req.ConfigId)
 	if err != nil {
 		c.JSON(http.StatusOK, &ContentResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
 	if configInfoData == nil {
 		c.JSON(http.StatusOK, &ContentResp{
-			Code: handler.Code_Err,
-			Msg:  "配置不存在",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "配置不存在",
+			},
 		})
 		return
 	}
@@ -72,15 +74,19 @@ func ConfigContent(c *gin.Context) {
 		hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, configInfoData.TenantID)
 		if err != nil || !hasPermission {
 			c.JSON(http.StatusOK, &ContentResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有查看配置的权限",
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有查看配置的权限",
+				},
 			})
 			return
 		}
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "获取配置详情成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "获取配置详情成功",
+	}
 	resp.Data = &ContentData{
 		ConfigId: req.ConfigId,
 		Content:  configInfoData.Content,

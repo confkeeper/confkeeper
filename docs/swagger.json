@@ -40,7 +40,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.CreateConfigResp"
                         }
                     }
                 }
@@ -79,7 +79,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.BatchDeleteConfigResp"
                         }
                     }
                 }
@@ -107,7 +107,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCleanupResp"
                         }
                     }
                 }
@@ -146,31 +146,31 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "400": {
                         "description": "参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "401": {
                         "description": "无权限",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "404": {
                         "description": "命名空间不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     }
                 }
@@ -198,7 +198,7 @@
                     {
                         "type": "string",
                         "description": "配置ID",
-                        "name": "user_id",
+                        "name": "config_id",
                         "in": "path",
                         "required": true
                     }
@@ -207,7 +207,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.DeleteConfigResp"
                         }
                     }
                 }
@@ -687,7 +687,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigResp"
                         }
                     }
                 }
@@ -747,7 +747,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigByFileResp"
                         }
                     }
                 }
@@ -769,9 +769,16 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "token",
-                        "name": "accessToken",
-                        "in": "query",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "formData",
                         "required": true
                     },
                     {
@@ -814,7 +821,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigByUserResp"
                         }
                     }
                 }
@@ -878,7 +885,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/permission.CreatePermissionResp"
                         }
                     }
                 }
@@ -929,7 +936,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/permission.DeletePermissionResp"
                         }
                     }
                 }
@@ -1035,7 +1042,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/role.CreateRoleResp"
                         }
                     }
                 }
@@ -1072,7 +1079,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/role.DeleteRoleResp"
                         }
                     }
                 }
@@ -1171,7 +1178,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/tenant.CreateTenantResp"
                         }
                     }
                 }
@@ -1208,7 +1215,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/tenant.DeleteTenantResp"
                         }
                     }
                 }
@@ -1291,7 +1298,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.CreateUserResp"
                         }
                     }
                 }
@@ -1357,7 +1364,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.ChangePasswordResp"
                         }
                     }
                 }
@@ -1394,7 +1401,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.DeleteUserResp"
                         }
                     }
                 }
@@ -1544,7 +1551,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.LogoutResp"
                         }
                     }
                 }
@@ -1613,7 +1620,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.UpdateUserResp"
                         }
                     }
                 }
@@ -1787,7 +1794,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.NacosUpdateConfigResp"
                         }
                     }
                 }
@@ -1795,6 +1802,17 @@
         }
     },
     "definitions": {
+        "config_info.BatchDeleteConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.BatchDeleteReq": {
             "type": "object",
             "required": [
@@ -1845,6 +1863,28 @@
                     }
                 },
                 "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.ConfigCleanupResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.ConfigCloneResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
                     "type": "string"
                 }
             }
@@ -1923,9 +1963,17 @@
                 },
                 "msg": {
                     "type": "string"
+                }
+            }
+        },
+        "config_info.CreateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
                 },
-                "total": {
-                    "type": "integer"
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -1951,6 +1999,17 @@
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "config_info.DeleteConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2063,6 +2122,17 @@
                 }
             }
         },
+        "config_info.NacosUpdateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.SearchMatch": {
             "type": "object",
             "properties": {
@@ -2117,6 +2187,39 @@
                 }
             }
         },
+        "config_info.UpdateConfigByFileResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.UpdateConfigByUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.UpdateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.UpdateReq": {
             "type": "object",
             "properties": {
@@ -2165,7 +2268,7 @@
                 "Code_UserErr"
             ]
         },
-        "handler.CommonResp": {
+        "permission.CreatePermissionResp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2198,6 +2301,17 @@
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "permission.DeletePermissionResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2254,6 +2368,28 @@
                 }
             }
         },
+        "role.CreateRoleResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "role.DeleteRoleResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "role.ListData": {
             "type": "object",
             "properties": {
@@ -2307,6 +2443,28 @@
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "tenant.CreateTenantResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "tenant.DeleteTenantResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2385,6 +2543,17 @@
                 }
             }
         },
+        "user.ChangePasswordResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "user.CreateReq": {
             "type": "object",
             "required": [
@@ -2395,6 +2564,28 @@
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "user.CreateUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.DeleteUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2423,9 +2614,6 @@
                 },
                 "msg": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         },
@@ -2519,6 +2707,17 @@
                 }
             }
         },
+        "user.LogoutResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "user.NacosLoginReq": {
             "type": "object",
             "required": [
@@ -2594,6 +2793,17 @@
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "user.UpdateUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         }

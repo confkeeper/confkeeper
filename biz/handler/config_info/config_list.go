@@ -29,10 +29,9 @@ type ListData struct {
 }
 
 type ListResp struct {
-	Code  handler.Code `json:"code"`
-	Msg   string       `json:"msg"`
-	Total int64        `json:"total"`
-	Data  []*ListData  `json:"data"`
+	handler.CommonResp
+	Total int64       `json:"total"`
+	Data  []*ListData `json:"data"`
 }
 
 // ConfigList 配置列表
@@ -65,8 +64,10 @@ func ConfigList(c *gin.Context) {
 		hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, req.TenantId)
 		if err != nil || !hasPermission {
 			c.JSON(http.StatusOK, &ListResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有查看配置列表的权限",
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有查看配置列表的权限",
+				},
 			})
 			return
 		}
@@ -94,8 +95,10 @@ func ConfigList(c *gin.Context) {
 	configInfos, total, err := dal.GetConfigInfoListWithMaxVersion(int(req.PageSize), int(offset), DataId, GroupId, Type, req.TenantId)
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: handler.Code_DBErr,
-			Msg:  "获取配置列表失败: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "获取配置列表失败: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -111,8 +114,10 @@ func ConfigList(c *gin.Context) {
 		})
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "获取成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "获取成功",
+	}
 	resp.Total = total
 	resp.Data = configInfoList
 

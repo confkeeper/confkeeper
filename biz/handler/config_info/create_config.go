@@ -17,6 +17,10 @@ type CreateReq struct {
 	TenantId string `json:"tenant_id" binding:"required,min=1,max=255"`
 }
 
+type CreateConfigResp struct {
+	handler.CommonResp
+}
+
 // CreateConfig 创建配置
 //
 //	@Tags			配置
@@ -25,7 +29,7 @@ type CreateReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			req	body		CreateReq	true	"配置信息"
-//	@Success		200	{object}	handler.CommonResp
+//	@Success		200	{object}	CreateConfigResp
 //	@Security		ApiKeyAuth
 //	@router			/api/config/add [PUT]
 func CreateConfig(c *gin.Context) {
@@ -34,16 +38,18 @@ func CreateConfig(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(handler.CommonResp)
+	resp := new(CreateConfigResp)
 
 	// 权限检查：管理员或有命名空间rw权限的用户
 	if err := utils.IsAdmin(c); err != nil {
 		// 检查用户是否有命名空间的rw权限
 		hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, req.TenantId)
 		if err != nil || !hasPermission {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有创建配置的权限",
+			c.JSON(http.StatusOK, &CreateConfigResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有创建配置的权限",
+				},
 			})
 			return
 		}
@@ -54,16 +60,20 @@ func CreateConfig(c *gin.Context) {
 	// 检查命名空间是否不存在
 	exist, err := dal.IsTenantIdExists(req.TenantId)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "检查命名空间失败: " + err.Error(),
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查命名空间失败: " + err.Error(),
+			},
 		})
 		return
 	}
 	if !exist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_AlreadyExists,
-			Msg:  "该命名空间不存在",
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_AlreadyExists,
+				Msg:  "该命名空间不存在",
+			},
 		})
 		return
 	}
@@ -71,16 +81,20 @@ func CreateConfig(c *gin.Context) {
 	// 检查配置是否已存在
 	exist, err = dal.IsConfigInfoExists(req.DataId, req.GroupId, req.TenantId)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "检查命名空间失败: " + err.Error(),
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查命名空间失败: " + err.Error(),
+			},
 		})
 		return
 	}
 	if exist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_AlreadyExists,
-			Msg:  "该配置已存在",
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_AlreadyExists,
+				Msg:  "该配置已存在",
+			},
 		})
 		return
 	}
@@ -96,12 +110,19 @@ func CreateConfig(c *gin.Context) {
 	}
 
 	if err = dal.CreateConfigInfo([]*model.ConfigInfo{cfg}); err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_DBErr, Msg: "配置文件新建失败: " + err.Error()})
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "配置文件新建失败: " + err.Error(),
+			},
+		})
 		return
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "新建配置文件成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "新建配置文件成功",
+	}
 
 	c.JSON(http.StatusOK, resp)
 	handler.IncConfigChange()

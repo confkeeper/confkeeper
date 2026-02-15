@@ -9,9 +9,8 @@ import (
 )
 
 type LanguageListResp struct {
-	Code handler.Code `json:"code"`
-	Msg  string       `json:"msg"`
-	Data []string     `json:"data"`
+	handler.CommonResp
+	Data []string `json:"data"`
 }
 
 // ConfigLanguageList 配置支持语言列表
@@ -27,8 +26,10 @@ type LanguageListResp struct {
 func ConfigLanguageList(c *gin.Context) {
 	resp := new(LanguageListResp)
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "获取成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "获取成功",
+	}
 	resp.Data = config.Cfg.Confkeeper.ConfigType
 
 	c.JSON(http.StatusOK, resp)

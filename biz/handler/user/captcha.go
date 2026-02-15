@@ -11,8 +11,7 @@ import (
 
 // CaptchaResp 验证码响应
 type CaptchaResp struct {
-	Code handler.Code `json:"code"`
-	Msg  string       `json:"msg"`
+	handler.CommonResp
 	Data *CaptchaData `json:"data"`
 }
 
@@ -36,15 +35,19 @@ func GenerateCaptcha(c *gin.Context) {
 	id, base64Image, _, err := NewCaptcha.Generate()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &CaptchaResp{
-			Code: handler.Code_Err,
-			Msg:  "生成验证码失败",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "生成验证码失败",
+			},
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, &CaptchaResp{
-		Code: handler.Code_Success,
-		Msg:  "生成验证码成功",
+		CommonResp: handler.CommonResp{
+			Code: handler.Code_Success,
+			Msg:  "生成验证码成功",
+		},
 		Data: &CaptchaData{
 			ID:          id,
 			Base64Image: base64Image,

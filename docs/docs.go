@@ -52,7 +52,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.CreateConfigResp"
                         }
                     }
                 }
@@ -91,7 +91,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.BatchDeleteConfigResp"
                         }
                     }
                 }
@@ -119,7 +119,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCleanupResp"
                         }
                     }
                 }
@@ -158,31 +158,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "400": {
                         "description": "参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "401": {
                         "description": "无权限",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "404": {
                         "description": "命名空间不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.ConfigCloneResp"
                         }
                     }
                 }
@@ -210,7 +210,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "配置ID",
-                        "name": "user_id",
+                        "name": "config_id",
                         "in": "path",
                         "required": true
                     }
@@ -219,7 +219,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.DeleteConfigResp"
                         }
                     }
                 }
@@ -699,7 +699,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigResp"
                         }
                     }
                 }
@@ -759,7 +759,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigByFileResp"
                         }
                     }
                 }
@@ -781,9 +781,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "token",
-                        "name": "accessToken",
-                        "in": "query",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "formData",
                         "required": true
                     },
                     {
@@ -826,7 +833,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.UpdateConfigByUserResp"
                         }
                     }
                 }
@@ -890,7 +897,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/permission.CreatePermissionResp"
                         }
                     }
                 }
@@ -941,7 +948,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/permission.DeletePermissionResp"
                         }
                     }
                 }
@@ -1047,7 +1054,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/role.CreateRoleResp"
                         }
                     }
                 }
@@ -1084,7 +1091,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/role.DeleteRoleResp"
                         }
                     }
                 }
@@ -1183,7 +1190,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/tenant.CreateTenantResp"
                         }
                     }
                 }
@@ -1220,7 +1227,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/tenant.DeleteTenantResp"
                         }
                     }
                 }
@@ -1303,7 +1310,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.CreateUserResp"
                         }
                     }
                 }
@@ -1369,7 +1376,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.ChangePasswordResp"
                         }
                     }
                 }
@@ -1406,7 +1413,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.DeleteUserResp"
                         }
                     }
                 }
@@ -1556,7 +1563,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.LogoutResp"
                         }
                     }
                 }
@@ -1625,7 +1632,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/user.UpdateUserResp"
                         }
                     }
                 }
@@ -1799,7 +1806,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonResp"
+                            "$ref": "#/definitions/config_info.NacosUpdateConfigResp"
                         }
                     }
                 }
@@ -1807,6 +1814,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "config_info.BatchDeleteConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.BatchDeleteReq": {
             "type": "object",
             "required": [
@@ -1857,6 +1875,28 @@ const docTemplate = `{
                     }
                 },
                 "tenant_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.ConfigCleanupResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.ConfigCloneResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
                     "type": "string"
                 }
             }
@@ -1935,9 +1975,17 @@ const docTemplate = `{
                 },
                 "msg": {
                     "type": "string"
+                }
+            }
+        },
+        "config_info.CreateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
                 },
-                "total": {
-                    "type": "integer"
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -1963,6 +2011,17 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "config_info.DeleteConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2075,6 +2134,17 @@ const docTemplate = `{
                 }
             }
         },
+        "config_info.NacosUpdateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.SearchMatch": {
             "type": "object",
             "properties": {
@@ -2129,6 +2199,39 @@ const docTemplate = `{
                 }
             }
         },
+        "config_info.UpdateConfigByFileResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.UpdateConfigByUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.UpdateConfigResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "config_info.UpdateReq": {
             "type": "object",
             "properties": {
@@ -2177,7 +2280,7 @@ const docTemplate = `{
                 "Code_UserErr"
             ]
         },
-        "handler.CommonResp": {
+        "permission.CreatePermissionResp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2210,6 +2313,17 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "permission.DeletePermissionResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2266,6 +2380,28 @@ const docTemplate = `{
                 }
             }
         },
+        "role.CreateRoleResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "role.DeleteRoleResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "role.ListData": {
             "type": "object",
             "properties": {
@@ -2319,6 +2455,28 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "tenant.CreateTenantResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "tenant.DeleteTenantResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2397,6 +2555,17 @@ const docTemplate = `{
                 }
             }
         },
+        "user.ChangePasswordResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "user.CreateReq": {
             "type": "object",
             "required": [
@@ -2407,6 +2576,28 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "user.CreateUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.DeleteUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         },
@@ -2435,9 +2626,6 @@ const docTemplate = `{
                 },
                 "msg": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         },
@@ -2531,6 +2719,17 @@ const docTemplate = `{
                 }
             }
         },
+        "user.LogoutResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "user.NacosLoginReq": {
             "type": "object",
             "required": [
@@ -2606,6 +2805,17 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                }
+            }
+        },
+        "user.UpdateUserResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
                 }
             }
         }
