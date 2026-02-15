@@ -47,10 +47,10 @@ func SyncLDAPUsers(c *gin.Context) {
 	// 检查管理员权限
 	err := utils.IsAdmin(c)
 	if err != nil {
-c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-	Code: handler.Code_Unauthorized,
-	Msg:  err.Error(),
-})
+		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
+			Code: handler.Code_Unauthorized,
+			Msg:  err.Error(),
+		})
 		return
 	}
 	// 从LDAP获取所有用户
@@ -65,7 +65,7 @@ c.JSON(http.StatusOK, &SyncLDAPUsersResp{
 	}
 
 	// 先一次性查询数据库中所有用户，存储到map中以提高性能
-	existingUsers, _, err := dal.GetUserList(10000, 0, "")
+	existingUsers, _, err := dal.GetAllUser()
 	if err != nil {
 		slog.Errorf("查询本地用户失败: %v", err)
 		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
