@@ -102,8 +102,8 @@ func GetAllLDAPUsers() ([]map[string]string, error) {
 	// Bind
 	if config.Cfg.Ldap.BindDN != "" {
 		err = l.Bind(config.Cfg.Ldap.BindDN, config.Cfg.Ldap.BindPass)
-		slog.Errorf("LDAP绑定鉴权失败: %v", err)
 		if err != nil {
+			slog.Errorf("LDAP绑定鉴权失败: %v", err)
 			return nil, fmt.Errorf("LDAP绑定鉴权失败")
 		}
 	}
