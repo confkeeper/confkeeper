@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gookit/slog"
 )
 
 type LoginReq struct {
@@ -89,10 +90,37 @@ func UserLogin(c *gin.Context) {
 			return
 		}
 	} else {
-		// 数据库有用户，验证密码
-		if userData.Password != utils.MD5(req.Password) {
-			c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
-			return
+		// 数据库有用户，检查密码是否为空
+		if userData.Password == "" {
+			// 密码为空，尝试LDAP登录
+			if config.Cfg.Ldap.Enabled {
+				success, _, ldapErr := ldap_client.LDAPAuth(req.Username, req.Password)
+				if success {
+					// LDAP登录成功，更新用户密码
+					userData.Password = utils.MD5(req.Password)
+					if updateErr := dal.UpdateUser(userData); updateErr != nil {
+						c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "密码更新失败"})
+						return
+					}
+					// 更新成功后继续走登录逻辑(生成token)
+				} else {
+					// LDAP登录失败
+					if ldapErr != nil {
+						slog.Errorf("LDAP login failed: %v", ldapErr)
+					}
+					c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+					return
+				}
+			} else {
+				c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+				return
+			}
+		} else {
+			// 密码不为空，验证密码
+			if userData.Password != utils.MD5(req.Password) {
+				c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+				return
+			}
 		}
 	}
 

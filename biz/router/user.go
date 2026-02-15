@@ -19,5 +19,6 @@ func userRoutes(apiGroup *gin.RouterGroup) {
 		userGroup.POST("/logout", mw.JWTAuthMiddleware(), hUser.UserLogout)
 		userGroup.GET("/list", mw.JWTAuthMiddleware(), hUser.UserList)
 		userGroup.GET("/info/:user_id", mw.JWTAuthMiddleware(), hUser.UserInfo)
+		userGroup.POST("/sync-ldap", mw.JWTAuthMiddleware(), hUser.SyncLDAPUsers)
 	}
 }
