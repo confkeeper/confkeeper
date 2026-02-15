@@ -104,11 +104,10 @@ c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "密码更新失
 					// 更新成功后继续走登录逻辑(生成token)
 				} else {
 					// LDAP登录失败
-					msg := "密码错误"
 					if ldapErr != nil {
-						msg += " " + ldapErr.Error()
+						// It's recommended to log the ldapErr for debugging purposes.
 					}
-					c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: msg})
+					c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
 					return
 				}
 			} else {
