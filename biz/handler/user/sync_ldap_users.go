@@ -47,10 +47,10 @@ func SyncLDAPUsers(c *gin.Context) {
 	// 检查管理员权限
 	err := utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(http.StatusOK, &ListResp{
-			Code: handler.Code_Unauthorized,
-			Msg:  err.Error(),
-		})
+c.JSON(http.StatusOK, &SyncLDAPUsersResp{
+	Code: handler.Code_Unauthorized,
+	Msg:  err.Error(),
+})
 		return
 	}
 	// 从LDAP获取所有用户
