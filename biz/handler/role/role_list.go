@@ -20,10 +20,9 @@ type ListData struct {
 }
 
 type ListResp struct {
-	Code  handler.Code `json:"code"`
-	Msg   string       `json:"msg"`
-	Total int64        `json:"total"`
-	Data  []*ListData  `json:"data"`
+	handler.CommonResp
+	Total int64       `json:"total"`
+	Data  []*ListData `json:"data"`
 }
 
 // RoleList 获取角色列表
@@ -50,8 +49,10 @@ func RoleList(c *gin.Context) {
 	err := utils.IsAdmin(c)
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: handler.Code_Unauthorized,
-			Msg:  err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Unauthorized,
+				Msg:  err.Error(),
+			},
 		})
 		return
 	}
@@ -70,8 +71,10 @@ func RoleList(c *gin.Context) {
 	roles, total, err := dal.GetAllRolesWithPagination(int(req.PageSize), int(offset))
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
-			Code: handler.Code_DBErr,
-			Msg:  "获取角色列表失败: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "获取角色列表失败: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -84,8 +87,10 @@ func RoleList(c *gin.Context) {
 		})
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "获取成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "获取成功",
+	}
 	resp.Total = total
 	resp.Data = roleList
 

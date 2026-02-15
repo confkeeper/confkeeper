@@ -21,6 +21,10 @@ type UpdateConfigByUserReq struct {
 	Content  string `form:"content" binding:"required"`
 }
 
+type UpdateConfigByUserResp struct {
+	handler.CommonResp
+}
+
 // UpdateConfigByUser 使用账号更新/创建配置
 //
 //	@Tags			配置
@@ -28,13 +32,14 @@ type UpdateConfigByUserReq struct {
 //	@Description	使用账号更新/创建配置
 //	@Accept			application/x-www-form-urlencoded
 //	@Produce		application/json
-//	@Param			accessToken	query		string	true	"token"
+//	@Param			username	formData	string	true	"用户名"
+//	@Param			password	formData	string	true	"密码"
 //	@Param			tenant		formData	string	true	"tenant"
 //	@Param			dataId		formData	string	true	"dataId"
 //	@Param			group		formData	string	true	"group"
 //	@Param			type		formData	string	true	"type"
 //	@Param			content		formData	string	true	"content"
-//	@Success		200			{object}	handler.CommonResp
+//	@Success		200			{object}	UpdateConfigByUserResp
 //	@router			/api/config/update_by_user [POST]
 func UpdateConfigByUser(c *gin.Context) {
 	req := new(UpdateConfigByUserReq)
@@ -42,7 +47,7 @@ func UpdateConfigByUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(handler.CommonResp)
+	resp := new(UpdateConfigByUserResp)
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
@@ -61,9 +66,11 @@ func UpdateConfigByUser(c *gin.Context) {
 		// 检查用户是否有命名空间的rw权限
 		hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, req.Tenant)
 		if err != nil || !hasPermission {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有发布配置的权限",
+			c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有发布配置的权限",
+				},
 			})
 			return
 		}
@@ -72,16 +79,20 @@ func UpdateConfigByUser(c *gin.Context) {
 	// 检查命名空间是否存在
 	exist, err := dal.IsTenantIdExists(req.Tenant)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+		c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
 	if !exist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_Err,
-			Msg:  "命名空间不存在",
+		c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "命名空间不存在",
+			},
 		})
 		return
 	}
@@ -89,9 +100,11 @@ func UpdateConfigByUser(c *gin.Context) {
 	// 判断该 tenant 下是否已存在该 dataId+group 的配置
 	exists, err := dal.IsConfigInfoExists(req.DataId, req.Group, req.Tenant)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+		c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -104,9 +117,11 @@ func UpdateConfigByUser(c *gin.Context) {
 		// 已存在则在该 tenant 作用域下取最大版本+1
 		maxVersion, err := dal.GetMaxVersionByDataIdGroupAndTenant(req.DataId, req.Group, req.Tenant)
 		if err != nil {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_DBErr,
-				Msg:  "数据库查询错误: " + err.Error(),
+			c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "数据库查询错误: " + err.Error(),
+				},
 			})
 			return
 		}
@@ -124,15 +139,19 @@ func UpdateConfigByUser(c *gin.Context) {
 	}
 
 	if err = dal.CreateConfigInfo([]*model.ConfigInfo{cfg}); err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "创建配置失败: " + err.Error(),
+		c.JSON(http.StatusOK, &UpdateConfigByUserResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "创建配置失败: " + err.Error(),
+			},
 		})
 		return
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "上传成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "上传成功",
+	}
 
 	c.JSON(http.StatusOK, resp)
 	handler.IncConfigChange()

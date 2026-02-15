@@ -28,8 +28,7 @@ type ContentByParamsData struct {
 }
 
 type ContentByParamsResp struct {
-	Code handler.Code         `json:"code"`
-	Msg  string               `json:"msg"`
+	handler.CommonResp
 	Data *ContentByParamsData `json:"data"`
 }
 
@@ -62,8 +61,10 @@ func ConfigContentByParams(c *gin.Context) {
 		hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, req.TenantId)
 		if err != nil || !hasPermission {
 			c.JSON(http.StatusOK, &ContentByParamsResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有查看配置的权限",
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有查看配置的权限",
+				},
 			})
 			return
 		}
@@ -73,15 +74,19 @@ func ConfigContentByParams(c *gin.Context) {
 	exist, err := dal.IsTenantIdExists(req.TenantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ContentByParamsResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
 	if !exist {
 		c.JSON(http.StatusNotFound, &ContentByParamsResp{
-			Code: handler.Code_Err,
-			Msg:  "命名空间不存在",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "命名空间不存在",
+			},
 		})
 		return
 	}
@@ -90,22 +95,28 @@ func ConfigContentByParams(c *gin.Context) {
 	configInfoData, err := dal.GetConfigInfoByDataIdAndGroupWithMaxVersion(req.DataId, req.GroupId, req.TenantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ContentByParamsResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
 	if configInfoData == nil {
 		c.JSON(http.StatusNotFound, &ContentByParamsResp{
-			Code: handler.Code_Err,
-			Msg:  "配置不存在",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "配置不存在",
+			},
 		})
 		return
 	}
 
 	// 返回配置详情
-	resp.Code = handler.Code_Success
-	resp.Msg = "获取配置成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "获取配置成功",
+	}
 	resp.Data = &ContentByParamsData{
 		ConfigId:   strconv.FormatUint(uint64(configInfoData.ID), 10),
 		TenantId:   configInfoData.TenantID,

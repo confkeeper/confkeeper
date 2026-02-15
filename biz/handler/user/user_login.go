@@ -27,9 +27,8 @@ type LoginData struct {
 }
 
 type LoginResp struct {
-	Code handler.Code `json:"code"`
-	Msg  string       `json:"msg"`
-	Data *LoginData   `json:"data"`
+	handler.CommonResp
+	Data *LoginData `json:"data"`
 }
 
 // UserLogin 用户登录
@@ -53,8 +52,10 @@ func UserLogin(c *gin.Context) {
 	// 验证验证码
 	if !captcha.Store.Verify(req.CaptchaID, req.Captcha, true) {
 		c.JSON(http.StatusOK, &LoginResp{
-			Code: handler.Code_CaptchaErr,
-			Msg:  "验证码错误或已过期",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_CaptchaErr,
+				Msg:  "验证码错误或已过期",
+			},
 		})
 		return
 	}
@@ -72,7 +73,12 @@ func UserLogin(c *gin.Context) {
 					Enable:   true,
 				}
 				if createErr := dal.CreateUser([]*model.User{userData}); createErr != nil {
-					c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "用户同步失败: " + createErr.Error()})
+					c.JSON(http.StatusOK, &LoginResp{
+						CommonResp: handler.CommonResp{
+							Code: handler.Code_DBErr,
+							Msg:  "用户同步失败: " + createErr.Error(),
+						},
+					})
 					return
 				}
 				// 注册成功后继续走登录逻辑(生成token)
@@ -82,11 +88,21 @@ func UserLogin(c *gin.Context) {
 				if ldapErr != nil {
 					msg += " 或 " + ldapErr.Error()
 				}
-				c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: msg})
+				c.JSON(http.StatusOK, &LoginResp{
+					CommonResp: handler.CommonResp{
+						Code: handler.Code_DBErr,
+						Msg:  msg,
+					},
+				})
 				return
 			}
 		} else {
-			c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "用户不存在或密码错误"})
+			c.JSON(http.StatusOK, &LoginResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "用户不存在或密码错误",
+				},
+			})
 			return
 		}
 	} else {
@@ -99,7 +115,12 @@ func UserLogin(c *gin.Context) {
 					// LDAP登录成功，更新用户密码
 					userData.Password = utils.MD5(req.Password)
 					if updateErr := dal.UpdateUser(userData); updateErr != nil {
-						c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_DBErr, Msg: "密码更新失败"})
+						c.JSON(http.StatusOK, &LoginResp{
+							CommonResp: handler.CommonResp{
+								Code: handler.Code_DBErr,
+								Msg:  "密码更新失败",
+							},
+						})
 						return
 					}
 					// 更新成功后继续走登录逻辑(生成token)
@@ -108,17 +129,32 @@ func UserLogin(c *gin.Context) {
 					if ldapErr != nil {
 						slog.Errorf("LDAP login failed: %v", ldapErr)
 					}
-					c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+					c.JSON(http.StatusOK, &LoginResp{
+						CommonResp: handler.CommonResp{
+							Code: handler.Code_PasswordErr,
+							Msg:  "密码错误",
+						},
+					})
 					return
 				}
 			} else {
-				c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+				c.JSON(http.StatusOK, &LoginResp{
+					CommonResp: handler.CommonResp{
+						Code: handler.Code_PasswordErr,
+						Msg:  "密码错误",
+					},
+				})
 				return
 			}
 		} else {
 			// 密码不为空，验证密码
 			if userData.Password != utils.MD5(req.Password) {
-				c.JSON(http.StatusOK, &LoginResp{Code: handler.Code_PasswordErr, Msg: "密码错误"})
+				c.JSON(http.StatusOK, &LoginResp{
+					CommonResp: handler.CommonResp{
+						Code: handler.Code_PasswordErr,
+						Msg:  "密码错误",
+					},
+				})
 				return
 			}
 		}
@@ -132,8 +168,10 @@ func UserLogin(c *gin.Context) {
 		token, _ = utils.GenerateToken(userData.ID, req.Username, 60)
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "登录成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "登录成功",
+	}
 	resp.Data = &LoginData{
 		Token: token,
 	}

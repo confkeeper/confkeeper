@@ -15,6 +15,10 @@ type CreateReq struct {
 	Username string `json:"username" binding:"required,min=1,max=255"`
 }
 
+type CreateRoleResp struct {
+	handler.CommonResp
+}
+
 // CreateRole 创建角色
 //
 //	@Tags			角色管理
@@ -23,7 +27,7 @@ type CreateReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			req	body		CreateReq	true	"角色信息"
-//	@Success		200	{object}	handler.CommonResp
+//	@Success		200	{object}	CreateRoleResp
 //	@Security		ApiKeyAuth
 //	@router			/api/role/add [PUT]
 func CreateRole(c *gin.Context) {
@@ -32,14 +36,16 @@ func CreateRole(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(handler.CommonResp)
+	resp := new(CreateRoleResp)
 
 	// 检查是否为管理员
 	err := utils.IsAdmin(c)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_Unauthorized,
-			Msg:  err.Error(),
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Unauthorized,
+				Msg:  err.Error(),
+			},
 		})
 		return
 	}
@@ -47,16 +53,20 @@ func CreateRole(c *gin.Context) {
 	// 先检查用户名是否已存在
 	exist, err := dal.IsUsernameExists(req.Username)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "检查用户名失败: " + err.Error(),
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查用户名失败: " + err.Error(),
+			},
 		})
 		return
 	}
 	if !exist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_AlreadyExists,
-			Msg:  "该用户不存在",
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_AlreadyExists,
+				Msg:  "该用户不存在",
+			},
 		})
 		return
 	}
@@ -64,16 +74,20 @@ func CreateRole(c *gin.Context) {
 	// 检查角色是否存在
 	roleExist, err := dal.IsRoleExistsInRoles(req.Role)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "检查角色是否存在失败: " + err.Error(),
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查角色是否存在失败: " + err.Error(),
+			},
 		})
 		return
 	}
 	if roleExist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_Err,
-			Msg:  "角色已存在",
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "角色已存在",
+			},
 		})
 		return
 	}
@@ -84,12 +98,19 @@ func CreateRole(c *gin.Context) {
 	}
 
 	if err = dal.CreateRole([]*model.Roles{r}); err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{Code: handler.Code_DBErr, Msg: "角色创建失败: " + err.Error()})
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "角色创建失败: " + err.Error(),
+			},
+		})
 		return
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "创建角色成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "创建角色成功",
+	}
 
 	c.JSON(http.StatusOK, resp)
 }

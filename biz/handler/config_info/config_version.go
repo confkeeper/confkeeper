@@ -28,8 +28,7 @@ type ListVersionData struct {
 }
 
 type ListVersionResp struct {
-	Code  handler.Code       `json:"code"`
-	Msg   string             `json:"msg"`
+	handler.CommonResp
 	Total int64              `json:"total"`
 	Data  []*ListVersionData `json:"data"`
 }
@@ -59,15 +58,19 @@ func ConfigVersion(c *gin.Context) {
 	configInfoData, err := dal.GetConfigInfoByID(req.ConfigId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ListVersionResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
 	if configInfoData == nil {
 		c.JSON(http.StatusNotFound, &ListVersionResp{
-			Code: handler.Code_Err,
-			Msg:  "配置不存在",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "配置不存在",
+			},
 		})
 		return
 	}
@@ -78,8 +81,10 @@ func ConfigVersion(c *gin.Context) {
 		hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, configInfoData.TenantID)
 		if err != nil || !hasPermission {
 			c.JSON(http.StatusOK, &ListVersionResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有查看配置版本的权限",
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有查看配置版本的权限",
+				},
 			})
 			return
 		}
@@ -89,8 +94,10 @@ func ConfigVersion(c *gin.Context) {
 	allVersions, err := dal.GetAllVersionsByDataIdAndGroup(configInfoData.DataID, configInfoData.GroupID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &ListVersionResp{
-			Code: handler.Code_DBErr,
-			Msg:  "数据库查询错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "数据库查询错误: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -112,9 +119,12 @@ func ConfigVersion(c *gin.Context) {
 
 	// 创建新的响应结构体，使用repeated字段
 	resp = &ListVersionResp{
-		Code: handler.Code_Success,
-		Msg:  "获取配置版本成功",
-		Data: versionList,
+		CommonResp: handler.CommonResp{
+			Code: handler.Code_Success,
+			Msg:  "获取配置版本成功",
+		},
+		Total: int64(len(versionList)),
+		Data:  versionList,
 	}
 
 	c.JSON(http.StatusOK, resp)

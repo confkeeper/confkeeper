@@ -32,8 +32,7 @@ type SearchResultData struct {
 }
 
 type SearchResp struct {
-	Code  handler.Code        `json:"code"`
-	Msg   string              `json:"msg"`
+	handler.CommonResp
 	Total int64               `json:"total"`
 	Data  []*SearchResultData `json:"data"`
 }
@@ -56,8 +55,10 @@ func SearchConfig(c *gin.Context) {
 	req := new(SearchReq)
 	if err := c.ShouldBindQuery(req); err != nil {
 		c.JSON(http.StatusOK, &SearchResp{
-			Code: handler.Code_ParamErr,
-			Msg:  "参数错误: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_ParamErr,
+				Msg:  "参数错误: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -69,8 +70,10 @@ func SearchConfig(c *gin.Context) {
 			hasPermission, err := mw.CheckNamespaceReadOrWritePermissionHTTP(c, req.TenantId)
 			if err != nil || !hasPermission {
 				c.JSON(http.StatusOK, &SearchResp{
-					Code: handler.Code_Unauthorized,
-					Msg:  "没有查看该命名空间配置的权限",
+					CommonResp: handler.CommonResp{
+						Code: handler.Code_Unauthorized,
+						Msg:  "没有查看该命名空间配置的权限",
+					},
 				})
 				return
 			}
@@ -90,8 +93,10 @@ func SearchConfig(c *gin.Context) {
 	configs, total, err := dal.SearchConfigContent(req.Keyword, req.TenantId, offset, pageSize)
 	if err != nil {
 		c.JSON(http.StatusOK, &SearchResp{
-			Code: handler.Code_DBErr,
-			Msg:  "搜索失败: " + err.Error(),
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "搜索失败: " + err.Error(),
+			},
 		})
 		return
 	}
@@ -147,8 +152,10 @@ func SearchConfig(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &SearchResp{
-		Code:  handler.Code_Success,
-		Msg:   "搜索成功",
+		CommonResp: handler.CommonResp{
+			Code: handler.Code_Success,
+			Msg:  "搜索成功",
+		},
 		Total: total,
 		Data:  results,
 	})

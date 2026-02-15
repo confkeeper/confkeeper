@@ -23,6 +23,10 @@ type CloneReq struct {
 	Items    []*CloneItems `json:"items"`
 }
 
+type ConfigCloneResp struct {
+	handler.CommonResp
+}
+
 // ConfigClone 克隆配置
 //
 //	@Tags			配置
@@ -31,11 +35,11 @@ type CloneReq struct {
 //	@Accept			application/json
 //	@Produce		application/json
 //	@Param			req	body		CloneReq	true	"克隆配置请求参数"
-//	@Success		200	{object}	handler.CommonResp
-//	@Failure		400	{object}	handler.CommonResp	"参数错误"
-//	@Failure		401	{object}	handler.CommonResp	"无权限"
-//	@Failure		404	{object}	handler.CommonResp	"命名空间不存在"
-//	@Failure		500	{object}	handler.CommonResp	"服务器错误"
+//	@Success		200	{object}	ConfigCloneResp
+//	@Failure		400	{object}	ConfigCloneResp	"参数错误"
+//	@Failure		401	{object}	ConfigCloneResp	"无权限"
+//	@Failure		404	{object}	ConfigCloneResp	"命名空间不存在"
+//	@Failure		500	{object}	ConfigCloneResp	"服务器错误"
 //	@Security		ApiKeyAuth
 //	@router			/api/config/clone [POST]
 func ConfigClone(c *gin.Context) {
@@ -44,16 +48,18 @@ func ConfigClone(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	resp := new(handler.CommonResp)
+	resp := new(ConfigCloneResp)
 
 	// 权限检查：管理员或有命名空间rw权限的用户
 	if err := utils.IsAdmin(c); err != nil {
 		// 检查用户是否有命名空间的rw权限
 		hasPermission, err := mw.CheckNamespaceWritePermissionHTTP(c, req.TenantId)
 		if err != nil || !hasPermission {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "没有克隆配置的权限",
+			c.JSON(http.StatusOK, &ConfigCloneResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Unauthorized,
+					Msg:  "没有克隆配置的权限",
+				},
 			})
 			return
 		}
@@ -62,16 +68,20 @@ func ConfigClone(c *gin.Context) {
 	// 检查命名空间是否存在
 	exist, err := dal.IsTenantIdExists(req.TenantId)
 	if err != nil {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_DBErr,
-			Msg:  "检查命名空间失败: " + err.Error(),
+		c.JSON(http.StatusOK, &ConfigCloneResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查命名空间失败: " + err.Error(),
+			},
 		})
 		return
 	}
 	if !exist {
-		c.JSON(http.StatusOK, &handler.CommonResp{
-			Code: handler.Code_AlreadyExists,
-			Msg:  "该命名空间不存在",
+		c.JSON(http.StatusOK, &ConfigCloneResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_AlreadyExists,
+				Msg:  "该命名空间不存在",
+			},
 		})
 		return
 	}
@@ -83,16 +93,20 @@ func ConfigClone(c *gin.Context) {
 		// 用config_id查询原配置
 		originalConfig, err := dal.GetConfigInfoByID(item.ConfigId)
 		if err != nil {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_DBErr,
-				Msg:  "查询原配置失败: " + err.Error(),
+			c.JSON(http.StatusOK, &ConfigCloneResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "查询原配置失败: " + err.Error(),
+				},
 			})
 			return
 		}
 		if originalConfig == nil {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_Err,
-				Msg:  fmt.Sprintf("配置不存在: config_id=%s", item.ConfigId),
+			c.JSON(http.StatusOK, &ConfigCloneResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Err,
+					Msg:  fmt.Sprintf("配置不存在: config_id=%s", item.ConfigId),
+				},
 			})
 			return
 		}
@@ -113,16 +127,20 @@ func ConfigClone(c *gin.Context) {
 	// 批量创建新配置
 	if len(configsToCreate) > 0 {
 		if err = dal.CreateConfigInfo(configsToCreate); err != nil {
-			c.JSON(http.StatusOK, &handler.CommonResp{
-				Code: handler.Code_DBErr,
-				Msg:  "创建配置失败: " + err.Error(),
+			c.JSON(http.StatusOK, &ConfigCloneResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "创建配置失败: " + err.Error(),
+				},
 			})
 			return
 		}
 	}
 
-	resp.Code = handler.Code_Success
-	resp.Msg = "配置克隆成功"
+	resp.CommonResp = handler.CommonResp{
+		Code: handler.Code_Success,
+		Msg:  "配置克隆成功",
+	}
 
 	c.JSON(http.StatusOK, resp)
 	handler.IncConfigChange()
