@@ -67,7 +67,7 @@ func GetRoleListWithPagination(pageSize int, offset int) ([]*model.Roles, int64,
 
 	// 分页获取不重复的角色名
 	var uniqueRoles []string
-	if err := DB.Model(&model.Roles{}).Distinct("role").Offset(offset).Limit(pageSize).Pluck("role", &uniqueRoles).Error; err != nil {
+if err := DB.Model(&model.Roles{}).Distinct("role").Order("role").Offset(offset).Limit(pageSize).Pluck("role", &uniqueRoles).Error; err != nil {
 		return nil, 0, err
 	}
 
