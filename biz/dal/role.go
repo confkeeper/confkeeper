@@ -37,25 +37,6 @@ func DeleteRole(role string) error {
 	})
 }
 
-// GetAllRolesWithPagination 分页获取所有角色列表（基于角色表）
-func GetAllRolesWithPagination(pageSize int, offset int) ([]*model.Roles, int64, error) {
-	var roles []*model.Roles
-
-	query := DB.Model(&model.Roles{})
-
-	var total int64
-	if err := query.Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
-	// 分页查询
-	if err := query.Offset(offset).Limit(pageSize).Find(&roles).Error; err != nil {
-		return nil, 0, err
-	}
-
-	return roles, total, nil
-}
-
 // GetRoleListWithPagination 分页获取角色的聚合列表
 func GetRoleListWithPagination(pageSize int, offset int) ([]*model.Roles, int64, error) {
 	var total int64
@@ -97,15 +78,12 @@ func UpdateRoleUsers(role string, usernames []string) error {
 		}
 
 		// 组装新的绑定关系
-		var newRoles []*model.Roles
-		if len(usernames) > 0 {
-			newRoles = make([]*model.Roles, 0, len(usernames))
-			for _, username := range usernames {
-				newRoles = append(newRoles, &model.Roles{
-					Role:     role,
-					Username: username,
-				})
-			}
+		newRoles := make([]*model.Roles, 0, len(usernames))
+		for _, username := range usernames {
+			newRoles = append(newRoles, &model.Roles{
+				Role:     role,
+				Username: username,
+			})
 		}
 
 		// 批量插入

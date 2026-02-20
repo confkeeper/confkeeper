@@ -50,30 +50,7 @@ func CreateRole(c *gin.Context) {
 		return
 	}
 
-	// 检查每一个用户名是否真实存在
-	for _, username := range req.Usernames {
-		exist, err := dal.IsUsernameExists(username)
-		if err != nil {
-			c.JSON(http.StatusOK, &CreateRoleResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_DBErr,
-					Msg:  "检查用户名失败: " + err.Error(),
-				},
-			})
-			return
-		}
-		if !exist {
-			c.JSON(http.StatusOK, &CreateRoleResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_Err,
-					Msg:  "用户 " + username + " 不存在",
-				},
-			})
-			return
-		}
-	}
-
-	// 检查角色是否存在
+	// 检查用户名是否存在
 	missingUsernames, err := dal.FindMissingUsernames(req.Usernames)
 	if err != nil {
 		c.JSON(http.StatusOK, &CreateRoleResp{
