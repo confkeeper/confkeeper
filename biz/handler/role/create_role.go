@@ -4,7 +4,6 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -37,18 +36,6 @@ func CreateRole(c *gin.Context) {
 		return
 	}
 	resp := new(CreateRoleResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &CreateRoleResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 检查用户名是否存在
 	missingUsernames, err := dal.FindMissingUsernames(req.Usernames)

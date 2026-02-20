@@ -4,7 +4,6 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -53,17 +52,6 @@ func CreateUser(c *gin.Context) {
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_AlreadyExists,
 				Msg:  "该用户已存在",
-			},
-		})
-		return
-	}
-
-	err = utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &CreateUserResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
 			},
 		})
 		return

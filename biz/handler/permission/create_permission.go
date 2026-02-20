@@ -3,7 +3,6 @@ package permission
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"confkeeper/utils/config"
 	"net/http"
 	"slices"
@@ -39,18 +38,6 @@ func CreatePermission(c *gin.Context) {
 		return
 	}
 	resp := new(CreatePermissionResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &CreatePermissionResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 检查角色是否存在
 	roleExist, err := dal.IsRoleExistsInRoles(req.Role)

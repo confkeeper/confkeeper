@@ -3,7 +3,6 @@ package role
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -36,18 +35,6 @@ func EditRole(c *gin.Context) {
 		return
 	}
 	resp := new(EditRoleResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &EditRoleResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 预查角色是否存在？
 	roleExist, err := dal.IsRoleExistsInRoles(req.Role)

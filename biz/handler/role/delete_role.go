@@ -3,7 +3,6 @@ package role
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -36,20 +35,8 @@ func DeleteRole(c *gin.Context) {
 	}
 	resp := new(DeleteRoleResp)
 
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &DeleteRoleResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
-
 	// 删除角色及其所有权限
-	if err = dal.DeleteRole(req.Role); err != nil {
+	if err := dal.DeleteRole(req.Role); err != nil {
 		c.JSON(http.StatusOK, &DeleteRoleResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,

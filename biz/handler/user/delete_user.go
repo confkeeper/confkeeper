@@ -37,17 +37,6 @@ func DeleteUser(c *gin.Context) {
 	}
 	resp := new(DeleteUserResp)
 
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &DeleteUserResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
-
 	reqUserId, _ := strconv.Atoi(req.UserId)
 
 	if reqUserId == 1 {
@@ -71,7 +60,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err = dal.DeleteUser(reqUserId); err != nil {
+	if err := dal.DeleteUser(reqUserId); err != nil {
 		c.JSON(http.StatusOK, &DeleteUserResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,
