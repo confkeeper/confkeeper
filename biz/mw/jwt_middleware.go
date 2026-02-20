@@ -106,6 +106,14 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 			}
 		}
 
+		// 将 claims 保存到上下文
+		for k, v := range claims {
+			c.Set(k, v)
+		}
+		c.Set("userid", claims["userid"])
+		c.Set("username", claims["username"])
+		c.Set("token", token)
+
 		if opt.CheckAdmin {
 			// 检查是否为管理员
 			err := utils.IsAdmin(c)
@@ -118,14 +126,6 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 				return
 			}
 		}
-
-		// 将 claims 保存到上下文
-		for k, v := range claims {
-			c.Set(k, v)
-		}
-		c.Set("userid", claims["userid"])
-		c.Set("username", claims["username"])
-		c.Set("token", token)
 
 		// 检查用户是否启用
 		if CheckUserEnabled(c) {
