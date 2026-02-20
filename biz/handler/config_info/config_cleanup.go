@@ -3,7 +3,6 @@ package config_info
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,17 +24,6 @@ type ConfigCleanupResp struct {
 //	@router			/api/config/cleanup [POST]
 func ConfigCleanup(c *gin.Context) {
 	resp := new(ConfigCleanupResp)
-
-	// 权限检查：仅管理员可执行清理操作
-	if err := utils.IsAdmin(c); err != nil {
-		c.JSON(http.StatusOK, &ConfigCleanupResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  "只有管理员可以执行清理操作",
-			},
-		})
-		return
-	}
 
 	// 执行清理操作
 	if err := dal.ClearOldConfigVersions(); err != nil {

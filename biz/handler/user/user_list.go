@@ -3,7 +3,6 @@ package user
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 	"strconv"
 
@@ -49,18 +48,6 @@ func UserList(c *gin.Context) {
 		return
 	}
 	resp := new(ListResp)
-
-	// 检查管理员权限
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &ListResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 设置分页默认值
 	if req.Page == 0 {

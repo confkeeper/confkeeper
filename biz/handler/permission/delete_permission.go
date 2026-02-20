@@ -3,7 +3,6 @@ package permission
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -39,18 +38,6 @@ func DeletePermission(c *gin.Context) {
 		return
 	}
 	resp := new(DeletePermissionResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &DeletePermissionResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 检查要删除的权限是否存在
 	exist, err := dal.IsPermissionExists(req.Role, req.Resource, req.Action)

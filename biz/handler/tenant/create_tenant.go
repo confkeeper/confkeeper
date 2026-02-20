@@ -4,7 +4,6 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,18 +37,6 @@ func CreateTenant(c *gin.Context) {
 		return
 	}
 	resp := new(CreateTenantResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &CreateTenantResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 检查命名空间是否已存在
 	exist, err := dal.IsTenantIdExists(req.TenantId)

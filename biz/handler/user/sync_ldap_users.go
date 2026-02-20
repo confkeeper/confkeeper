@@ -4,7 +4,6 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
-	"confkeeper/utils"
 	"confkeeper/utils/config"
 	"confkeeper/utils/ldap_client"
 	"net/http"
@@ -44,15 +43,6 @@ func SyncLDAPUsers(c *gin.Context) {
 		return
 	}
 
-	// 检查管理员权限
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-			Code: handler.Code_Unauthorized,
-			Msg:  err.Error(),
-		})
-		return
-	}
 	// 从LDAP获取所有用户
 	ldapUsers, err := ldap_client.GetAllLDAPUsers()
 	if err != nil {

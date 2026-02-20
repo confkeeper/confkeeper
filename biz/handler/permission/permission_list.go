@@ -3,7 +3,6 @@ package permission
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,18 +46,6 @@ func PermissionList(c *gin.Context) {
 		return
 	}
 	resp := new(ListResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &ListResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	if req.Page == 0 {
 		req.Page = 1

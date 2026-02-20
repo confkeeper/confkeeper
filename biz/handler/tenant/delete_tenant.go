@@ -3,7 +3,6 @@ package tenant
 import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
-	"confkeeper/utils"
 	"net/http"
 	"strconv"
 
@@ -36,18 +35,6 @@ func DeleteTenant(c *gin.Context) {
 		return
 	}
 	resp := new(DeleteTenantResp)
-
-	// 检查是否为管理员
-	err := utils.IsAdmin(c)
-	if err != nil {
-		c.JSON(http.StatusOK, &DeleteTenantResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_Unauthorized,
-				Msg:  err.Error(),
-			},
-		})
-		return
-	}
 
 	// 检查租户下是否还有配置
 	id, _ := strconv.Atoi(req.ID)

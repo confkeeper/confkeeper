@@ -51,7 +51,14 @@ func CheckUserEnabled(c *gin.Context) bool {
 }
 
 // JWTAuthMiddleware 鉴权中间件
-func JWTAuthMiddleware(isShortTerm ...bool) gin.HandlerFunc {
+func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
+	// 初始化默认值（Go 结构体布尔字段默认就是 false）
+	var opt utils.AuthOptions
+
+	// 如果用户传了参数，就用用户传的第一个参数覆盖默认值
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
 	return func(c *gin.Context) {
 		// 获取 Authorization Header
 		authHeader := c.Request.Header.Get("Authorization")
@@ -87,12 +94,25 @@ func JWTAuthMiddleware(isShortTerm ...bool) gin.HandlerFunc {
 		}
 
 		// 检查短时token
-		if len(isShortTerm) > 0 && isShortTerm[0] {
+		if opt.IsShortTerm {
 			tokenType, ok := claims["token_type"].(string)
 			if !ok || tokenType != "short_term" {
 				c.JSON(http.StatusUnauthorized, map[string]interface{}{
 					"code": http.StatusUnauthorized,
 					"msg":  "没有权限",
+				})
+				c.Abort() // 终止后续处理
+				return
+			}
+		}
+
+		if opt.CheckAdmin {
+			// 检查是否为管理员
+			err := utils.IsAdmin(c)
+			if err != nil {
+				c.JSON(http.StatusOK, map[string]interface{}{
+					"code": http.StatusUnauthorized,
+					"msg":  "不是管理员",
 				})
 				c.Abort() // 终止后续处理
 				return
