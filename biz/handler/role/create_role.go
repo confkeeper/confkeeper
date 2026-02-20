@@ -11,8 +11,8 @@ import (
 )
 
 type CreateReq struct {
-	Role     string `json:"role" binding:"required,min=1,max=255"`
-	Username string `json:"username" binding:"required,min=1,max=255"`
+	Role      string   `json:"role" binding:"required,min=1,max=255"`
+	Usernames []string `json:"usernames" binding:"required,min=1"`
 }
 
 type CreateRoleResp struct {
@@ -50,8 +50,8 @@ func CreateRole(c *gin.Context) {
 		return
 	}
 
-	// 先检查用户名是否已存在
-	exist, err := dal.IsUsernameExists(req.Username)
+	// 检查用户名是否存在
+	missingUsernames, err := dal.FindMissingUsernames(req.Usernames)
 	if err != nil {
 		c.JSON(http.StatusOK, &CreateRoleResp{
 			CommonResp: handler.CommonResp{
@@ -61,43 +61,25 @@ func CreateRole(c *gin.Context) {
 		})
 		return
 	}
-	if !exist {
-		c.JSON(http.StatusOK, &CreateRoleResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_AlreadyExists,
-				Msg:  "该用户不存在",
-			},
-		})
-		return
-	}
-
-	// 检查角色是否存在
-	roleExist, err := dal.IsRoleExistsInRoles(req.Role)
-	if err != nil {
-		c.JSON(http.StatusOK, &CreateRoleResp{
-			CommonResp: handler.CommonResp{
-				Code: handler.Code_DBErr,
-				Msg:  "检查角色是否存在失败: " + err.Error(),
-			},
-		})
-		return
-	}
-	if roleExist {
+	if len(missingUsernames) > 0 {
 		c.JSON(http.StatusOK, &CreateRoleResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_Err,
-				Msg:  "角色已存在",
+				Msg:  "用户 " + missingUsernames[0] + " 不存在",
 			},
 		})
 		return
 	}
 
-	r := &model.Roles{
-		Username: req.Username,
-		Role:     req.Role,
+	roles := make([]*model.Roles, len(req.Usernames))
+	for i, username := range req.Usernames {
+		roles[i] = &model.Roles{
+			Username: username,
+			Role:     req.Role,
+		}
 	}
 
-	if err = dal.CreateRole([]*model.Roles{r}); err != nil {
+	if err = dal.CreateRole(roles); err != nil {
 		c.JSON(http.StatusOK, &CreateRoleResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,

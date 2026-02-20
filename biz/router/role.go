@@ -12,6 +12,7 @@ func roleRoutes(apiGroup *gin.RouterGroup) {
 	roleGroup.Use(mw.JWTAuthMiddleware())
 	{
 		roleGroup.PUT("/add", hRole.CreateRole)
+		roleGroup.PUT("/edit", hRole.EditRole)
 		roleGroup.DELETE("/delete/:role", hRole.DeleteRole)
 		roleGroup.GET("/list", hRole.RoleList)
 	}

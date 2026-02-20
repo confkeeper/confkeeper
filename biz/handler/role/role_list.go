@@ -15,8 +15,8 @@ type ListReq struct {
 }
 
 type ListData struct {
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	Usernames []string `json:"usernames"`
+	Role      string   `json:"role"`
 }
 
 type ListResp struct {
@@ -68,7 +68,7 @@ func RoleList(c *gin.Context) {
 	// 计算偏移量
 	offset := (req.Page - 1) * req.PageSize
 
-	roles, total, err := dal.GetAllRolesWithPagination(int(req.PageSize), int(offset))
+	roles, total, err := dal.GetRoleListWithPagination(int(req.PageSize), int(offset))
 	if err != nil {
 		c.JSON(http.StatusOK, &ListResp{
 			CommonResp: handler.CommonResp{
@@ -79,11 +79,21 @@ func RoleList(c *gin.Context) {
 		return
 	}
 
-	var roleList []*ListData
+	roleMap := make(map[string][]string)
+	var orderedRoles []string // 为了保持分页顺序，记录返回的 role 顺序
+
 	for _, r := range roles {
+		if _, ok := roleMap[r.Role]; !ok {
+			orderedRoles = append(orderedRoles, r.Role)
+		}
+		roleMap[r.Role] = append(roleMap[r.Role], r.Username)
+	}
+
+	var roleList []*ListData
+	for _, role := range orderedRoles {
 		roleList = append(roleList, &ListData{
-			Role:     r.Role,
-			Username: r.Username,
+			Role:      role,
+			Usernames: roleMap[role],
 		})
 	}
 
