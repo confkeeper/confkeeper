@@ -1097,6 +1097,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/role/edit": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "全量更新角色关联的用户列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "角色管理"
+                ],
+                "summary": "编辑角色",
+                "parameters": [
+                    {
+                        "description": "编辑请求信息",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/role.EditReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/role.EditRoleResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/role/list": {
             "get": {
                 "security": [
@@ -2365,7 +2404,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "role",
-                "username"
+                "usernames"
             ],
             "properties": {
                 "role": {
@@ -2373,10 +2412,12 @@ const docTemplate = `{
                     "maxLength": 255,
                     "minLength": 1
                 },
-                "username": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
+                "usernames": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -2402,14 +2443,49 @@ const docTemplate = `{
                 }
             }
         },
+        "role.EditReq": {
+            "type": "object",
+            "required": [
+                "role",
+                "usernames"
+            ],
+            "properties": {
+                "role": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "usernames": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "role.EditRoleResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
         "role.ListData": {
             "type": "object",
             "properties": {
                 "role": {
                     "type": "string"
                 },
-                "username": {
-                    "type": "string"
+                "usernames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

@@ -55,3 +55,61 @@ func GetAllRolesWithPagination(pageSize int, offset int) ([]*model.Roles, int64,
 
 	return roles, total, nil
 }
+
+// GetRoleListWithPagination 分页获取角色的聚合列表
+func GetRoleListWithPagination(pageSize int, offset int) ([]*model.Roles, int64, error) {
+	var total int64
+
+	// 获取不重复的角色总数
+	if err := DB.Model(&model.Roles{}).Distinct("role").Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 分页获取不重复的角色名
+	var uniqueRoles []string
+	if err := DB.Model(&model.Roles{}).Distinct("role").Offset(offset).Limit(pageSize).Pluck("role", &uniqueRoles).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if len(uniqueRoles) == 0 {
+		return nil, total, nil
+	}
+
+	// 获取这些角色下的所有记录
+	var roles []*model.Roles
+	if err := DB.Model(&model.Roles{}).Where("role IN ?", uniqueRoles).Find(&roles).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return roles, total, nil
+}
+
+// UpdateRoleUsers 更新角色的用户列表（全量替换）
+func UpdateRoleUsers(role string, usernames []string) error {
+	return DB.Transaction(func(tx *gorm.DB) error {
+		// 删除属于该角色的所有用户关系
+		if err := tx.Where("role = ?", role).Delete(&model.Roles{}).Error; err != nil {
+			return err
+		}
+
+		if len(usernames) == 0 {
+			return nil
+		}
+
+		// 组装新的绑定关系
+		var newRoles []*model.Roles
+		for _, username := range usernames {
+			newRoles = append(newRoles, &model.Roles{
+				Role:     role,
+				Username: username,
+			})
+		}
+
+		// 批量插入
+		if err := tx.Create(newRoles).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}

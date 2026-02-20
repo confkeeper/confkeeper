@@ -375,13 +375,14 @@ definitions:
         maxLength: 255
         minLength: 1
         type: string
-      username:
-        maxLength: 255
-        minLength: 1
-        type: string
+      usernames:
+        items:
+          type: string
+        minItems: 1
+        type: array
     required:
     - role
-    - username
+    - usernames
     type: object
   role.CreateRoleResp:
     properties:
@@ -397,12 +398,36 @@ definitions:
       msg:
         type: string
     type: object
+  role.EditReq:
+    properties:
+      role:
+        maxLength: 255
+        minLength: 1
+        type: string
+      usernames:
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - role
+    - usernames
+    type: object
+  role.EditRoleResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      msg:
+        type: string
+    type: object
   role.ListData:
     properties:
       role:
         type: string
-      username:
-        type: string
+      usernames:
+        items:
+          type: string
+        type: array
     type: object
   role.ListResp:
     properties:
@@ -1376,6 +1401,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除角色
+      tags:
+      - 角色管理
+  /api/role/edit:
+    put:
+      consumes:
+      - application/json
+      description: 全量更新角色关联的用户列表
+      parameters:
+      - description: 编辑请求信息
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/role.EditReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/role.EditRoleResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 编辑角色
       tags:
       - 角色管理
   /api/role/list:
