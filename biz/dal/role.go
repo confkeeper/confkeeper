@@ -77,7 +77,7 @@ if err := DB.Model(&model.Roles{}).Distinct("role").Order("role").Offset(offset)
 
 	// 获取这些角色下的所有记录
 	var roles []*model.Roles
-	if err := DB.Model(&model.Roles{}).Where("role IN ?", uniqueRoles).Find(&roles).Error; err != nil {
+if err := DB.Model(&model.Roles{}).Where("role IN ?", uniqueRoles).Order("role").Find(&roles).Error; err != nil {
 		return nil, 0, err
 	}
 
