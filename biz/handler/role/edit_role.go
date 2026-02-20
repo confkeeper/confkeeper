@@ -73,26 +73,24 @@ func EditRole(c *gin.Context) {
 	}
 
 	// 检查每一个用户名是否真实存在
-	for _, username := range req.Usernames {
-		exist, err := dal.IsUsernameExists(username)
-		if err != nil {
-			c.JSON(http.StatusOK, &EditRoleResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_DBErr,
-					Msg:  "检查用户名失败: " + err.Error(),
-				},
-			})
-			return
-		}
-		if !exist {
-			c.JSON(http.StatusOK, &EditRoleResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_Err,
-					Msg:  "用户 " + username + " 不存在",
-				},
-			})
-			return
-		}
+	missingUsernames, err := dal.FindMissingUsernames(req.Usernames)
+	if err != nil {
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "检查用户名失败: " + err.Error(),
+			},
+		})
+		return
+	}
+	if len(missingUsernames) > 0 {
+		c.JSON(http.StatusOK, &CreateRoleResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "用户 " + missingUsernames[0] + " 不存在",
+			},
+		})
+		return
 	}
 
 	if err = dal.UpdateRoleUsers(req.Role, req.Usernames); err != nil {

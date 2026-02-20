@@ -12,7 +12,7 @@ import (
 
 type ListReq struct {
 	Page     int32  `form:"page" binding:"required,min=1,max=1000"`
-	PageSize int32  `form:"page_size" binding:"required,min=1,max=1000"`
+	PageSize int32  `form:"page_size" binding:"required,min=1,max=100"`
 	Username string `form:"username" binding:"omitempty,min=1,max=255"`
 }
 

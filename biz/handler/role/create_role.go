@@ -74,32 +74,32 @@ func CreateRole(c *gin.Context) {
 	}
 
 	// 检查角色是否存在
-	roleExist, err := dal.IsRoleExistsInRoles(req.Role)
+	missingUsernames, err := dal.FindMissingUsernames(req.Usernames)
 	if err != nil {
 		c.JSON(http.StatusOK, &CreateRoleResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,
-				Msg:  "检查角色是否存在失败: " + err.Error(),
+				Msg:  "检查用户名失败: " + err.Error(),
 			},
 		})
 		return
 	}
-	if roleExist {
+	if len(missingUsernames) > 0 {
 		c.JSON(http.StatusOK, &CreateRoleResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_Err,
-				Msg:  "角色已存在",
+				Msg:  "用户 " + missingUsernames[0] + " 不存在",
 			},
 		})
 		return
 	}
 
-	var roles []*model.Roles
-	for _, username := range req.Usernames {
-		roles = append(roles, &model.Roles{
+	roles := make([]*model.Roles, len(req.Usernames))
+	for i, username := range req.Usernames {
+		roles[i] = &model.Roles{
 			Username: username,
 			Role:     req.Role,
-		})
+		}
 	}
 
 	if err = dal.CreateRole(roles); err != nil {

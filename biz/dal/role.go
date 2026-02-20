@@ -67,7 +67,7 @@ func GetRoleListWithPagination(pageSize int, offset int) ([]*model.Roles, int64,
 
 	// 分页获取不重复的角色名
 	var uniqueRoles []string
-if err := DB.Model(&model.Roles{}).Distinct("role").Order("role").Offset(offset).Limit(pageSize).Pluck("role", &uniqueRoles).Error; err != nil {
+	if err := DB.Model(&model.Roles{}).Distinct("role").Order("role").Offset(offset).Limit(pageSize).Pluck("role", &uniqueRoles).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -77,7 +77,7 @@ if err := DB.Model(&model.Roles{}).Distinct("role").Order("role").Offset(offset)
 
 	// 获取这些角色下的所有记录
 	var roles []*model.Roles
-if err := DB.Model(&model.Roles{}).Where("role IN ?", uniqueRoles).Order("role").Find(&roles).Error; err != nil {
+	if err := DB.Model(&model.Roles{}).Where("role IN ?", uniqueRoles).Order("role").Find(&roles).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -98,11 +98,14 @@ func UpdateRoleUsers(role string, usernames []string) error {
 
 		// 组装新的绑定关系
 		var newRoles []*model.Roles
-		for _, username := range usernames {
-			newRoles = append(newRoles, &model.Roles{
-				Role:     role,
-				Username: username,
-			})
+		if len(usernames) > 0 {
+			newRoles = make([]*model.Roles, 0, len(usernames))
+			for _, username := range usernames {
+				newRoles = append(newRoles, &model.Roles{
+					Role:     role,
+					Username: username,
+				})
+			}
 		}
 
 		// 批量插入
@@ -112,4 +115,32 @@ func UpdateRoleUsers(role string, usernames []string) error {
 
 		return nil
 	})
+}
+
+// FindMissingUsernames 检查一个用户名列表，并返回那些在数据库中不存在的用户名。
+func FindMissingUsernames(usernames []string) ([]string, error) {
+	if len(usernames) == 0 {
+		return nil, nil
+	}
+	var existingUsernames []string
+	// 找出给定的用户名中有哪些已经存在。
+	err := DB.Model(&model.User{}).Where("username IN ?", usernames).Pluck("username", &existingUsernames).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 使用 map 来高效查找已存在的用户名。
+	existingSet := make(map[string]struct{}, len(existingUsernames))
+	for _, u := range existingUsernames {
+		existingSet[u] = struct{}{}
+	}
+
+	// 找出哪些用户名是缺失的。
+	var missingUsernames []string
+	for _, u := range usernames {
+		if _, ok := existingSet[u]; !ok {
+			missingUsernames = append(missingUsernames, u)
+		}
+	}
+	return missingUsernames, nil
 }
