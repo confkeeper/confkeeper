@@ -115,7 +115,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	if req.Password != nil {
-		userData.Password = *req.Password
+		userData.Password = utils.MD5(*req.Password)
 	}
 
 	// 方法保存数据
