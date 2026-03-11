@@ -61,7 +61,7 @@ func CreateUser(c *gin.Context) {
 
 	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
-c.JSON(http.StatusInternalServerError, &CreateUserResp{
+		c.JSON(http.StatusInternalServerError, &CreateUserResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,
 				Msg:  "密码加密失败: " + err.Error(),
