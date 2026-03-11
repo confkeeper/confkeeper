@@ -533,11 +533,16 @@ definitions:
     type: object
   user.CreateReq:
     properties:
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
       username:
         maxLength: 255
         minLength: 1
         type: string
     required:
+    - password
     - username
     type: object
   user.CreateUserResp:
@@ -687,6 +692,10 @@ definitions:
     properties:
       enable:
         type: boolean
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
       username:
         maxLength: 255
         minLength: 1

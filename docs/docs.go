@@ -2645,9 +2645,15 @@ const docTemplate = `{
         "user.CreateReq": {
             "type": "object",
             "required": [
+                "password",
                 "username"
             ],
             "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
                 "username": {
                     "type": "string",
                     "maxLength": 255,
@@ -2876,6 +2882,11 @@ const docTemplate = `{
             "properties": {
                 "enable": {
                     "type": "boolean"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 },
                 "username": {
                     "type": "string",

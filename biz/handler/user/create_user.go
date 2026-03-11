@@ -4,6 +4,7 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/handler"
 	"confkeeper/biz/model"
+	"confkeeper/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ import (
 
 type CreateReq struct {
 	Username string `json:"username" binding:"required,min=1,max=255"`
+	Password string `json:"password" binding:"required,min=1,max=255"`
 }
 
 type CreateUserResp struct {
@@ -59,7 +61,7 @@ func CreateUser(c *gin.Context) {
 
 	u := &model.User{
 		Username: req.Username,
-		Password: "",
+		Password: utils.MD5(req.Password),
 		Enable:   true,
 	}
 
