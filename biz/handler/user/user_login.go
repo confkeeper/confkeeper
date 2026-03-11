@@ -69,7 +69,7 @@ func UserLogin(c *gin.Context) {
 				// LDAP登录成功，注册用户到数据库
 				hashedPassword, err := utils.HashPassword(req.Password)
 				if err != nil {
-					c.JSON(http.StatusOK, &LoginResp{
+c.JSON(http.StatusInternalServerError, &LoginResp{
 						CommonResp: handler.CommonResp{
 							Code: handler.Code_DBErr,
 							Msg:  "密码加密失败: " + err.Error(),
