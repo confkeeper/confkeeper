@@ -18,7 +18,7 @@ import (
 //	@Produce		application/json
 //	@Router			/api/ping [get]
 func Ping(c *gin.Context) {
-	err := dal.ChackDb()
+	err := dal.CheckDb()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 200,

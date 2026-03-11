@@ -25,7 +25,7 @@ var defaultConfigContent []byte
 var staticFS embed.FS
 
 //go:embed docs/swagger.json
-var swaggerJSoN []byte
+var swaggerJSON []byte
 
 //go:embed logo.png
 var logoPNG []byte
@@ -69,7 +69,7 @@ func main() {
 				config.Cfg.Server.Name, config.Cfg.Server.Author, config.Cfg.Server.Author),
 			DarkMode: true,
 			BasePath: "/api/swagger",
-			DocJSON:  swaggerJSoN,
+			DocJSON:  swaggerJSON,
 			UITheme:  qingfeng.ThemeModern,
 			Logo:     logoBase64,
 			LogoLink: "https://github.com/confkeeper/confkeeper",

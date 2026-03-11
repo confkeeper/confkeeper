@@ -4,7 +4,7 @@ import (
 	"confkeeper/biz/dal/mysql"
 	"confkeeper/biz/dal/postgres"
 	"confkeeper/biz/dal/sqlite"
-	"confkeeper/bootstrao"
+	"confkeeper/bootstrap"
 	"confkeeper/utils/config"
 
 	"github.com/gookit/slog"
@@ -29,19 +29,19 @@ func Init() {
 	switch dbType {
 	case "mysql":
 		DB = mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger)
-		err := bootstrao.Migrate(DB)
+		err := bootstrap.Migrate(DB)
 		if err != nil {
 			return
 		}
 	case "postgres":
 		DB = postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger)
-		err := bootstrao.Migrate(DB)
+		err := bootstrap.Migrate(DB)
 		if err != nil {
 			return
 		}
 	case "sqlite3":
 		DB = sqlite.Init(config.Cfg.Db.Database, gormLogger)
-		err := bootstrao.Migrate(DB)
+		err := bootstrap.Migrate(DB)
 		if err != nil {
 			return
 		}
@@ -49,7 +49,7 @@ func Init() {
 
 }
 
-func ChackDb() error {
+func CheckDb() error {
 	sqlDB, err := DB.DB()
 	if err != nil {
 		return err

@@ -2,7 +2,7 @@ package cron
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/bootstrao"
+	"confkeeper/bootstrap"
 	"confkeeper/utils/config"
 	"strings"
 	"time"
@@ -18,7 +18,7 @@ func CleanupTask() {
 	c := cron.New(cron.WithSeconds())
 	_, err := c.AddFunc(config.Cfg.Server.DeleteDataCron, func() {
 		performCleanup()
-		if err := bootstrao.Migrate(dal.DB); err != nil {
+		if err := bootstrap.Migrate(dal.DB); err != nil {
 			slog.Errorf("初始化数据失败: %v", err)
 		}
 	})

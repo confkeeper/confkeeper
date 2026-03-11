@@ -1,4 +1,4 @@
-package bootstrao
+package bootstrap
 
 import (
 	"confkeeper/biz/model"
