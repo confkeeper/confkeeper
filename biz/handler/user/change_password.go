@@ -11,7 +11,7 @@ import (
 )
 
 type ChangePasswdReq struct {
-	Password string `json:"password" binding:"required,min=1,max=255"`
+	Password string `json:"password" binding:"required,min=6,max=255"`
 }
 
 type ChangePasswdUriReq struct {

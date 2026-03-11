@@ -2627,7 +2627,7 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 }
             }
         },
@@ -2652,7 +2652,7 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 },
                 "username": {
                     "type": "string",
@@ -2886,7 +2886,7 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 },
                 "username": {
                     "type": "string",

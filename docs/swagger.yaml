@@ -519,7 +519,7 @@ definitions:
     properties:
       password:
         maxLength: 255
-        minLength: 1
+        minLength: 6
         type: string
     required:
     - password
@@ -535,7 +535,7 @@ definitions:
     properties:
       password:
         maxLength: 255
-        minLength: 1
+        minLength: 6
         type: string
       username:
         maxLength: 255
@@ -694,7 +694,7 @@ definitions:
         type: boolean
       password:
         maxLength: 255
-        minLength: 1
+        minLength: 6
         type: string
       username:
         maxLength: 255

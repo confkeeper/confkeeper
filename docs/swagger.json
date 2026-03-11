@@ -2615,7 +2615,7 @@
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 }
             }
         },
@@ -2640,7 +2640,7 @@
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 },
                 "username": {
                     "type": "string",
@@ -2874,7 +2874,7 @@
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 1
+                    "minLength": 6
                 },
                 "username": {
                     "type": "string",
