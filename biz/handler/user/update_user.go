@@ -115,7 +115,17 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	if req.Password != nil {
-		userData.Password = utils.MD5(*req.Password)
+		hashedPassword, err := utils.HashPassword(*req.Password)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, &UpdateUserResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "密码加密失败: " + err.Error(),
+				},
+			})
+			return
+		}
+		userData.Password = hashedPassword
 	}
 
 	// 方法保存数据

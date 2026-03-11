@@ -11,9 +11,13 @@ import (
 
 func InitData(db *gorm.DB) error {
 	// 创建管理员用户
+	hashedPassword, err := utils.HashPassword(config.Cfg.Admin.Password)
+	if err != nil {
+		return err
+	}
 	adminUser := &model.User{
 		Username: config.Cfg.Admin.Username,
-		Password: utils.MD5(config.Cfg.Admin.Password),
+		Password: hashedPassword,
 		Enable:   true,
 	}
 

@@ -81,7 +81,17 @@ func ChangePasswd(c *gin.Context) {
 		return
 	}
 
-	userData.Password = utils.MD5(req.Password)
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &ChangePasswordResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "密码加密失败: " + err.Error(),
+			},
+		})
+		return
+	}
+	userData.Password = hashedPassword
 
 	// 方法保存数据
 	err = dal.UpdateUser(userData)

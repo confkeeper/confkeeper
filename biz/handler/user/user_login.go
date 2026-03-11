@@ -67,9 +67,19 @@ func UserLogin(c *gin.Context) {
 			success, _, ldapErr := ldap_client.LDAPAuth(req.Username, req.Password)
 			if success {
 				// LDAP登录成功，注册用户到数据库
+				hashedPassword, err := utils.HashPassword(req.Password)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, &LoginResp{
+						CommonResp: handler.CommonResp{
+							Code: handler.Code_DBErr,
+							Msg:  "密码加密失败: " + err.Error(),
+						},
+					})
+					return
+				}
 				userData = &model.User{
 					Username: req.Username,
-					Password: utils.MD5(req.Password),
+					Password: hashedPassword,
 					Enable:   true,
 				}
 				if createErr := dal.CreateUser([]*model.User{userData}); createErr != nil {
@@ -113,7 +123,17 @@ func UserLogin(c *gin.Context) {
 				success, _, ldapErr := ldap_client.LDAPAuth(req.Username, req.Password)
 				if success {
 					// LDAP登录成功，更新用户密码
-					userData.Password = utils.MD5(req.Password)
+					hashedPassword, err := utils.HashPassword(req.Password)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, &LoginResp{
+							CommonResp: handler.CommonResp{
+								Code: handler.Code_DBErr,
+								Msg:  "密码加密失败: " + err.Error(),
+							},
+						})
+						return
+					}
+					userData.Password = hashedPassword
 					if updateErr := dal.UpdateUser(userData); updateErr != nil {
 						c.JSON(http.StatusOK, &LoginResp{
 							CommonResp: handler.CommonResp{
@@ -148,7 +168,7 @@ func UserLogin(c *gin.Context) {
 			}
 		} else {
 			// 密码不为空，验证密码
-			if userData.Password != utils.MD5(req.Password) {
+			if !utils.CheckPasswordHash(req.Password, userData.Password) {
 				c.JSON(http.StatusOK, &LoginResp{
 					CommonResp: handler.CommonResp{
 						Code: handler.Code_PasswordErr,

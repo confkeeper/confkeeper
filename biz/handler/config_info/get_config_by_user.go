@@ -47,7 +47,7 @@ func GetConfigByUser(c *gin.Context) {
 		c.String(http.StatusOK, err.Error())
 		return
 	}
-	if utils.MD5(req.Password) != userData.Password {
+	if !utils.CheckPasswordHash(req.Password, userData.Password) {
 		c.String(http.StatusOK, "密码错误")
 		return
 	}
