@@ -125,7 +125,7 @@ c.JSON(http.StatusInternalServerError, &LoginResp{
 					// LDAP登录成功，更新用户密码
 					hashedPassword, err := utils.HashPassword(req.Password)
 					if err != nil {
-						c.JSON(http.StatusOK, &LoginResp{
+c.JSON(http.StatusInternalServerError, &LoginResp{
 							CommonResp: handler.CommonResp{
 								Code: handler.Code_DBErr,
 								Msg:  "密码加密失败: " + err.Error(),
