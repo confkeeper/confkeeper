@@ -11,7 +11,7 @@ import (
 )
 
 type ChangePasswdReq struct {
-	Password string `json:"password" binding:"required,min=1,max=255"`
+	Password string `json:"password" binding:"required,min=6,max=255"`
 }
 
 type ChangePasswdUriReq struct {
@@ -51,15 +51,13 @@ func ChangePasswd(c *gin.Context) {
 	tokenUserId, _ := utils.GetUseridFromContext(c)
 
 	if userId != tokenUserId {
-		if tokenUserId != 1 {
-			c.JSON(http.StatusOK, &ChangePasswordResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_Unauthorized,
-					Msg:  "不能修改别人的密码",
-				},
-			})
-			return
-		}
+		c.JSON(http.StatusOK, &ChangePasswordResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Unauthorized,
+				Msg:  "不能修改别人的密码",
+			},
+		})
+		return
 	}
 
 	// 获取用户信息

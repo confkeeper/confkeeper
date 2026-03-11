@@ -12,6 +12,7 @@ import (
 
 type UpdateReq struct {
 	Username *string `json:"username" binding:"omitempty,min=1,max=255"`
+	Password *string `json:"password" binding:"omitempty,min=6,max=255"`
 	Enable   *bool   `json:"enable" binding:"omitempty"`
 }
 
@@ -111,6 +112,10 @@ func UpdateUser(c *gin.Context) {
 
 	if req.Enable != nil {
 		userData.Enable = *req.Enable
+	}
+
+	if req.Password != nil {
+		userData.Password = utils.MD5(*req.Password)
 	}
 
 	// 方法保存数据
