@@ -3,7 +3,7 @@ set -e
 
 # Default values
 WEB_REPO=confkeeper/confkeeper-web
-WEB_VERSION="v0.5.0"
+WEB_VERSION="v1.0.0"
 
 if [ -z "$RELEASE_TOKEN" ]; then
   echo "Error: RELEASE_TOKEN must be set"
