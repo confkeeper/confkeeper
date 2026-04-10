@@ -23,7 +23,6 @@
 │     ├── dal                   # 数据库连接和操作
 │     ├── model                 # 数据库模型
 │     ├── handler               # 服务逻辑
-│     ├── response              # 通用返回
 │     ├── mw                    # 中间件
 │     └── router                # 路由
 ├── internal                    # 版本
