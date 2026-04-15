@@ -1828,11 +1828,6 @@ paths:
         name: group
         required: true
         type: string
-      - description: tenant
-        in: query
-        name: tenant
-        required: true
-        type: string
       produces:
       - text/plain
       responses:

@@ -1754,13 +1754,6 @@ const docTemplate = `{
                         "name": "group",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "tenant",
-                        "name": "tenant",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {

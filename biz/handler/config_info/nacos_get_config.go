@@ -29,7 +29,6 @@ type NacosListReq struct {
 //	@Param			tenant		query		string	true	"tenant"
 //	@Param			dataId		query		string	true	"dataId"
 //	@Param			group		query		string	true	"group"
-//	@Param			tenant		query		string	true	"tenant"
 //	@Success		200			{string}	string	"配置内容"
 //	@Failure		404			{string}	string	"配置不存在"
 //	@Failure		500			{string}	string	"服务器错误"
