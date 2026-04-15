@@ -35,6 +35,7 @@ type GetConfigByUserReq struct {
 //	@Failure		500			{string}	string	"服务器错误"
 //	@Success		200			{string}	string	""
 //	@router			/api/config/get_by_user [GET]
+//	@router			/api/config/get_by_user [HEAD]
 func GetConfigByUser(c *gin.Context) {
 	req := new(GetConfigByUserReq)
 	if err := c.ShouldBindQuery(req); err != nil {

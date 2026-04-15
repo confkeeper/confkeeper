@@ -946,8 +946,94 @@ paths:
       summary: 获取配置(直接返回配置内容)
       tags:
       - 配置
+    head:
+      consumes:
+      - application/json
+      description: 获取配置(直接返回配置内容)
+      parameters:
+      - description: 租户
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: 数据ID
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: 分组
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: 配置内容
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 获取配置(直接返回配置内容)
+      tags:
+      - 配置
   /api/config/get_by_user:
     get:
+      consumes:
+      - application/json
+      description: 直接使用账号获取配置
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 密码
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: 租户ID
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: 数据ID
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: 分组ID
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 直接使用账号获取配置
+      tags:
+      - 配置
+    head:
       consumes:
       - application/json
       description: 直接使用账号获取配置
@@ -1804,6 +1890,50 @@ paths:
       - nacos兼容
   /nacos/v1/cs/configs:
     get:
+      consumes:
+      - application/json
+      description: 获取配置(nacos兼容)
+      parameters:
+      - description: token
+        in: query
+        name: accessToken
+        required: true
+        type: string
+      - description: tenant
+        in: query
+        name: tenant
+        required: true
+        type: string
+      - description: dataId
+        in: query
+        name: dataId
+        required: true
+        type: string
+      - description: group
+        in: query
+        name: group
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: 配置不存在
+          schema:
+            type: string
+        "500":
+          description: 服务器错误
+          schema:
+            type: string
+      summary: 获取配置(nacos兼容)
+      tags:
+      - 配置
+      - nacos兼容
+    head:
       consumes:
       - application/json
       description: 获取配置(nacos兼容)

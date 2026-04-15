@@ -370,10 +370,136 @@
                         }
                     }
                 }
+            },
+            "head": {
+                "description": "获取配置(直接返回配置内容)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "配置"
+                ],
+                "summary": "获取配置(直接返回配置内容)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "租户",
+                        "name": "tenant",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "数据ID",
+                        "name": "dataId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "分组",
+                        "name": "group",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "配置内容",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "配置不存在",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/api/config/get_by_user": {
             "get": {
+                "description": "直接使用账号获取配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "配置"
+                ],
+                "summary": "直接使用账号获取配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "租户ID",
+                        "name": "tenant",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "数据ID",
+                        "name": "dataId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "分组ID",
+                        "name": "group",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "配置不存在",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "head": {
                 "description": "直接使用账号获取配置",
                 "consumes": [
                     "application/json"
@@ -1827,6 +1953,70 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/config_info.NacosUpdateConfigResp"
+                        }
+                    }
+                }
+            },
+            "head": {
+                "description": "获取配置(nacos兼容)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "配置",
+                    "nacos兼容"
+                ],
+                "summary": "获取配置(nacos兼容)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "accessToken",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tenant",
+                        "name": "tenant",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "dataId",
+                        "name": "dataId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "group",
+                        "name": "group",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "配置不存在",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }

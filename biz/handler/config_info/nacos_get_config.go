@@ -34,6 +34,7 @@ type NacosListReq struct {
 //	@Failure		500			{string}	string	"服务器错误"
 //	@Success		200			{string}	string	""
 //	@router			/nacos/v1/cs/configs [GET]
+//	@router			/nacos/v1/cs/configs [HEAD]
 func NacosGetConfig(c *gin.Context) {
 	req := new(NacosListReq)
 	if err := c.ShouldBindQuery(req); err != nil {
