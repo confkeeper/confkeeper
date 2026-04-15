@@ -47,6 +47,7 @@ func ServerInfo(c *gin.Context) {
 		"data": gin.H{
 			"name":    config.Cfg.Server.Name,
 			"version": version.Version,
+			"ldap":    config.Cfg.Ldap.Enabled,
 		},
 	})
 }
