@@ -30,6 +30,7 @@ type GetConfigByFileReq struct {
 //	@Failure		404		{string}	string	"配置不存在"
 //	@Failure		500		{string}	string	"服务器错误"
 //	@router			/api/config/get_by_file [GET]
+//	@router			/api/config/get_by_file [HEAD]
 func GetConfigByFile(c *gin.Context) {
 	req := new(GetConfigByFileReq)
 	if err := c.ShouldBindQuery(req); err != nil {

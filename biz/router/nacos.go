@@ -12,6 +12,7 @@ func nacosRoutes(r *gin.Engine) {
 	{
 		nacosGroup.POST("/cs/configs", hConfigInfo.NacosUpdateConfig)
 		nacosGroup.GET("/cs/configs", hConfigInfo.NacosGetConfig)
+		nacosGroup.HEAD("/cs/configs", hConfigInfo.NacosGetConfig)
 		nacosGroup.POST("/auth/login", hUser.NacosUserLogin)
 	}
 }
