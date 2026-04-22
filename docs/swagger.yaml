@@ -117,6 +117,8 @@ definitions:
     type: object
   config_info.CreateReq:
     properties:
+      content:
+        type: string
       data_id:
         maxLength: 255
         minLength: 1
@@ -126,7 +128,11 @@ definitions:
         minLength: 1
         type: string
       tenant_id:
-        maxLength: 255
+        maxLength: 128
+        minLength: 1
+        type: string
+      type:
+        maxLength: 64
         minLength: 1
         type: string
     required:
@@ -847,7 +853,7 @@ paths:
       - application/json
       description: 通过tenant、dataId、group参数获取配置内容
       parameters:
-      - description: 租户ID
+      - description: 命名空间
         in: query
         name: tenant_id
         required: true
@@ -1000,7 +1006,7 @@ paths:
         name: password
         required: true
         type: string
-      - description: 租户ID
+      - description: 命名空间
         in: query
         name: tenant
         required: true
@@ -1048,7 +1054,7 @@ paths:
         name: password
         required: true
         type: string
-      - description: 租户ID
+      - description: 命名空间
         in: query
         name: tenant
         required: true

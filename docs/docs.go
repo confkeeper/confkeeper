@@ -241,7 +241,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "租户ID",
+                        "description": "命名空间",
                         "name": "tenant_id",
                         "in": "query",
                         "required": true
@@ -470,7 +470,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "租户ID",
+                        "description": "命名空间",
                         "name": "tenant",
                         "in": "query",
                         "required": true
@@ -540,7 +540,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "租户ID",
+                        "description": "命名空间",
                         "name": "tenant",
                         "in": "query",
                         "required": true
@@ -2219,6 +2219,9 @@ const docTemplate = `{
                 "tenant_id"
             ],
             "properties": {
+                "content": {
+                    "type": "string"
+                },
                 "data_id": {
                     "type": "string",
                     "maxLength": 255,
@@ -2231,7 +2234,12 @@ const docTemplate = `{
                 },
                 "tenant_id": {
                     "type": "string",
-                    "maxLength": 255,
+                    "maxLength": 128,
+                    "minLength": 1
+                },
+                "type": {
+                    "type": "string",
+                    "maxLength": 64,
                     "minLength": 1
                 }
             }
