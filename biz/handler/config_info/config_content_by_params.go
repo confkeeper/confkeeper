@@ -39,7 +39,7 @@ type ContentByParamsResp struct {
 //	@Description	通过tenant、dataId、group参数获取配置内容
 //	@Accept			application/json
 //	@Produce		application/json
-//	@Param			tenant_id	query		string	true	"租户ID"
+//	@Param			tenant_id	query		string	true	"命名空间"
 //	@Param			data_id		query		string	true	"数据ID"
 //	@Param			group_id	query		string	true	"分组ID"
 //	@Success		200			{object}	ContentByParamsResp

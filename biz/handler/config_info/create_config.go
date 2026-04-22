@@ -6,15 +6,19 @@ import (
 	"confkeeper/biz/model"
 	"confkeeper/biz/mw"
 	"confkeeper/utils"
+	"confkeeper/utils/config"
 	"net/http"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 )
 
 type CreateReq struct {
-	DataId   string `json:"data_id" binding:"required,min=1,max=255"`
-	GroupId  string `json:"group_id" binding:"required,min=1,max=255"`
-	TenantId string `json:"tenant_id" binding:"required,min=1,max=255"`
+	DataId   string  `json:"data_id" binding:"required,min=1,max=255"`
+	GroupId  string  `json:"group_id" binding:"required,min=1,max=255"`
+	TenantId string  `json:"tenant_id" binding:"required,min=1,max=255"`
+	Content  *string `json:"content" binding:"omitempty"`
+	Type     *string `json:"type" binding:"omitempty,min=1,max=255"`
 }
 
 type CreateConfigResp struct {
@@ -105,8 +109,24 @@ func CreateConfig(c *gin.Context) {
 		Content:  "",
 		TenantID: req.TenantId,
 		Type:     "text",
-		Version:  1, // 新配置版本为1
+		Version:  1,
 		Author:   c.GetString("username"),
+	}
+
+	if req.Content != nil {
+		cfg.Content = *req.Content
+	}
+	if req.Type != nil {
+		if !slices.Contains(config.Cfg.Confkeeper.ConfigType, *req.Type) {
+			c.JSON(http.StatusOK, &CreateConfigResp{
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_Err,
+					Msg:  "配置文件类型不支持",
+				},
+			})
+			return
+		}
+		cfg.Type = *req.Type
 	}
 
 	if err = dal.CreateConfigInfo([]*model.ConfigInfo{cfg}); err != nil {

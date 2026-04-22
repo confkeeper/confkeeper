@@ -27,7 +27,7 @@ type GetConfigByUserReq struct {
 //	@Produce		text/plain
 //	@Param			username	query		string	true	"用户名"
 //	@Param			password	query		string	true	"密码"
-//	@Param			tenant		query		string	true	"租户ID"
+//	@Param			tenant		query		string	true	"命名空间"
 //	@Param			dataId		query		string	true	"数据ID"
 //	@Param			group		query		string	true	"分组ID"
 //	@Success		200			{string}	string	"配置内容"
