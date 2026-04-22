@@ -117,16 +117,16 @@ func CreateConfig(c *gin.Context) {
 		cfg.Content = *req.Content
 	}
 	if req.Type != nil {
-		if !slices.Contains(config.Cfg.Confkeeper.ConfigType, *req.Type) {
-			c.JSON(http.StatusOK, &CreateConfigResp{
-				CommonResp: handler.CommonResp{
-					Code: handler.Code_Err,
-					Msg:  "配置文件类型不支持",
-				},
-			})
-			return
-		}
 		cfg.Type = *req.Type
+	}
+	if !slices.Contains(config.Cfg.Confkeeper.ConfigType, cfg.Type) {
+		c.JSON(http.StatusOK, &CreateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "配置文件类型不支持",
+			},
+		})
+		return
 	}
 
 	if err = dal.CreateConfigInfo([]*model.ConfigInfo{cfg}); err != nil {
