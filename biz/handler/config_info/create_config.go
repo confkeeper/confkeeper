@@ -16,7 +16,7 @@ import (
 type CreateReq struct {
 	DataId   string  `json:"data_id" binding:"required,min=1,max=255"`
 	GroupId  string  `json:"group_id" binding:"required,min=1,max=255"`
-	TenantId string  `json:"tenant_id" binding:"required,min=1,max=255"`
+	TenantId string  `json:"tenant_id" binding:"required,min=1,max=128"`
 	Content  *string `json:"content" binding:"omitempty"`
 	Type     *string `json:"type" binding:"omitempty,min=1,max=64"`
 }
