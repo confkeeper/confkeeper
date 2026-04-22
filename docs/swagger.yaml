@@ -128,11 +128,11 @@ definitions:
         minLength: 1
         type: string
       tenant_id:
-        maxLength: 255
+        maxLength: 128
         minLength: 1
         type: string
       type:
-        maxLength: 255
+        maxLength: 64
         minLength: 1
         type: string
     required:

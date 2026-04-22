@@ -2234,12 +2234,12 @@ const docTemplate = `{
                 },
                 "tenant_id": {
                     "type": "string",
-                    "maxLength": 255,
+                    "maxLength": 128,
                     "minLength": 1
                 },
                 "type": {
                     "type": "string",
-                    "maxLength": 255,
+                    "maxLength": 64,
                     "minLength": 1
                 }
             }
