@@ -44,8 +44,12 @@ func Init(cfg *config.DbConfig, zone string, gormLogger logger.Interface) *gorm.
 		if slavePort == "" {
 			slavePort = cfg.Port
 		}
+		slaveDatabase := cfg.SlaveDatabase
+		if slaveDatabase == "" {
+			slaveDatabase = cfg.Database
+		}
 		slaveDsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s",
-			slaveUser, slavePassword, cfg.SlaveHost, slavePort, cfg.Database, zone)
+			slaveUser, slavePassword, cfg.SlaveHost, slavePort, slaveDatabase, zone)
 		err = DB.Use(dbresolver.Register(dbresolver.Config{
 			Replicas: []gorm.Dialector{mysql.Open(slaveDsn)},
 		}))
