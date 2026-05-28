@@ -28,13 +28,13 @@ func Init() {
 
 	switch dbType {
 	case "mysql":
-		DB = mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger)
+		DB = mysql.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger, config.Cfg.Db.SlaveHost, config.Cfg.Db.SlavePort, config.Cfg.Db.SlaveUser, config.Cfg.Db.SlavePassword)
 		err := bootstrap.Migrate(DB)
 		if err != nil {
 			return
 		}
 	case "postgres":
-		DB = postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger)
+		DB = postgres.Init(config.Cfg.Db.User, config.Cfg.Db.Password, config.Cfg.Db.Host, config.Cfg.Db.Port, config.Cfg.Db.Database, config.Cfg.Server.Zone, gormLogger, config.Cfg.Db.SlaveHost, config.Cfg.Db.SlavePort, config.Cfg.Db.SlaveUser, config.Cfg.Db.SlavePassword)
 		err := bootstrap.Migrate(DB)
 		if err != nil {
 			return
