@@ -3,6 +3,8 @@ package mysql
 import (
 	"fmt"
 
+	"confkeeper/utils/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -12,9 +14,9 @@ import (
 
 var DB *gorm.DB
 
-func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName string, zone string, gormLogger logger.Interface, slaveHost string, slavePort string, slaveUser string, slavePassword string) *gorm.DB {
+func Init(cfg *config.DbConfig, zone string, gormLogger logger.Interface) *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s",
-		dbUser, dbPassword, dbHost, dbPort, dbName, zone)
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, zone)
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -22,16 +24,16 @@ func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName
 		PrepareStmt:            true,
 		Logger:                 gormLogger,
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
+			SingularTable: true, // 使用单数表名
 		},
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	if slaveHost != "" {
+	if cfg.SlaveHost != "" {
 		slaveDsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s",
-			slaveUser, slavePassword, slaveHost, slavePort, dbName, zone)
+			cfg.SlaveUser, cfg.SlavePassword, cfg.SlaveHost, cfg.SlavePort, cfg.Database, zone)
 		err = DB.Use(dbresolver.Register(dbresolver.Config{
 			Replicas: []gorm.Dialector{mysql.Open(slaveDsn)},
 		}))
