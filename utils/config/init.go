@@ -33,6 +33,7 @@ type DbConfig struct {
 	SlavePort     string `mapstructure:"slave_port"`
 	SlaveUser     string `mapstructure:"slave_user"`
 	SlavePassword string `mapstructure:"slave_password"`
+	SlaveDatabase string `mapstructure:"slave_database"`
 }
 
 type JwtConfig struct {
