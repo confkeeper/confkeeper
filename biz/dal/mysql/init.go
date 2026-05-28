@@ -3,17 +3,20 @@ package mysql
 import (
 	"fmt"
 
+	"confkeeper/utils/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"gorm.io/plugin/dbresolver"
 )
 
 var DB *gorm.DB
 
-func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName string, zone string, gormLogger logger.Interface) *gorm.DB {
+func Init(cfg *config.DbConfig, zone string, gormLogger logger.Interface) *gorm.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s",
-		dbUser, dbPassword, dbHost, dbPort, dbName, zone)
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database, zone)
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -26,6 +29,33 @@ func Init(dbUser string, dbPassword string, dbHost string, dbPort string, dbName
 	})
 	if err != nil {
 		panic(err)
+	}
+
+	if cfg.SlaveHost != "" {
+		slaveUser := cfg.SlaveUser
+		if slaveUser == "" {
+			slaveUser = cfg.User
+		}
+		slavePassword := cfg.SlavePassword
+		if slavePassword == "" {
+			slavePassword = cfg.Password
+		}
+		slavePort := cfg.SlavePort
+		if slavePort == "" {
+			slavePort = cfg.Port
+		}
+		slaveDatabase := cfg.SlaveDatabase
+		if slaveDatabase == "" {
+			slaveDatabase = cfg.Database
+		}
+		slaveDsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=%s",
+			slaveUser, slavePassword, cfg.SlaveHost, slavePort, slaveDatabase, zone)
+		err = DB.Use(dbresolver.Register(dbresolver.Config{
+			Replicas: []gorm.Dialector{mysql.Open(slaveDsn)},
+		}))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	return DB

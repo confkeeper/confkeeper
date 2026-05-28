@@ -23,12 +23,17 @@ type ServerConfig struct {
 }
 
 type DbConfig struct {
-	Type     string `mapstructure:"type"`
-	Host     string `mapstructure:"host"`
-	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	Database string `mapstructure:"database"`
+	Type          string `mapstructure:"type"`
+	Host          string `mapstructure:"host"`
+	Port          string `mapstructure:"port"`
+	User          string `mapstructure:"user"`
+	Password      string `mapstructure:"password"`
+	Database      string `mapstructure:"database"`
+	SlaveHost     string `mapstructure:"slave_host"`
+	SlavePort     string `mapstructure:"slave_port"`
+	SlaveUser     string `mapstructure:"slave_user"`
+	SlavePassword string `mapstructure:"slave_password"`
+	SlaveDatabase string `mapstructure:"slave_database"`
 }
 
 type JwtConfig struct {
