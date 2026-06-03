@@ -64,36 +64,44 @@ func GenerateToken(userid uint, username string, expTime ...int) (string, error)
 		return "", err
 	}
 
-	// 如果启用了内存存储，则将 token存储到内存中
+	// 如果启用了内存存储，则将 token存储到内存或 Redis 中
 	if config.Cfg.Jwt.EnableMemory {
-		TokenLock.Lock()
-		defer TokenLock.Unlock()
-
 		maxSessions := config.Cfg.Jwt.MaxLoginSessions
 		if maxSessions <= 0 {
 			maxSessions = 1 // 如果未设置或无效，默认为1
 		}
 
-		var tokens []string
-		if existingTokens, ok := TokenStore.Load(int(userid)); ok {
-			if strTokens, ok := existingTokens.([]string); ok {
-				// 复制切片以避免修改 Map 中的切片（尽管使用 store 是安全的）
-				// 但显式复制更安全
-				tokens = make([]string, len(strTokens))
-				copy(tokens, strTokens)
+		if EnableRedis {
+			// 使用 Redis 存储
+			tokens, _ := RedisLoadTokens(int(userid))
+			tokens = append(tokens, tokenString)
+			if len(tokens) > maxSessions {
+				tokens = tokens[len(tokens)-maxSessions:]
 			}
+			if err := RedisStoreTokens(int(userid), tokens); err != nil {
+				slog.Errorf("Redis 存储 token 失败: %v", err)
+			}
+		} else {
+			// 使用内存存储
+			TokenLock.Lock()
+			defer TokenLock.Unlock()
+
+			var tokens []string
+			if existingTokens, ok := TokenStore.Load(int(userid)); ok {
+				if strTokens, ok := existingTokens.([]string); ok {
+					tokens = make([]string, len(strTokens))
+					copy(tokens, strTokens)
+				}
+			}
+
+			tokens = append(tokens, tokenString)
+
+			if len(tokens) > maxSessions {
+				tokens = tokens[len(tokens)-maxSessions:]
+			}
+
+			TokenStore.Store(int(userid), tokens)
 		}
-
-		// 添加新 token
-		tokens = append(tokens, tokenString)
-
-		// 强制限制：如果超过限制，删除最旧的
-		if len(tokens) > maxSessions {
-			// 保留最后 maxSessions 个 token
-			tokens = tokens[len(tokens)-maxSessions:]
-		}
-
-		TokenStore.Store(int(userid), tokens)
 	}
 
 	return tokenString, nil
@@ -168,29 +176,47 @@ func ParseToken(tokenStr string) (jwt.MapClaims, error) {
 		return nil, fmt.Errorf("token 缺少 username")
 	}
 
-	// 如果启用了内存存储，验证是否在内存中
+	// 如果启用了内存存储，验证是否在内存或 Redis 中
 	if config.Cfg.Jwt.EnableMemory {
-		if storedTokens, ok := TokenStore.Load(userid); ok {
-			if tokenList, ok := storedTokens.([]string); ok {
-				found := false
-				for _, t := range tokenList {
-					if t == tokenStr {
-						found = true
-						break
-					}
+		if EnableRedis {
+			// 使用 Redis 验证
+			tokenList, err := RedisLoadTokens(userid)
+			if err != nil {
+				return nil, fmt.Errorf("服务器内部错误: Redis 读取失败")
+			}
+			if tokenList == nil {
+				return nil, fmt.Errorf("令牌不存在或已失效，请重新登录")
+			}
+			found := false
+			for _, t := range tokenList {
+				if t == tokenStr {
+					found = true
+					break
 				}
-				if !found {
-					// 在有效列表中未找到 Token（例如用户登录次数过多，旧会话已删除）
-					return nil, fmt.Errorf("令牌无效或已失效（可能是异地登录导致），请重新登录")
-				}
-			} else {
-				//如果类型断言失败，可能会发生这种情况，例如代码重启后类型不兼容
-				// 或者逻辑错误。拒绝是最安全的做法。
-				return nil, fmt.Errorf("服务器内部错误: 令牌存储格式错误")
+			}
+			if !found {
+				return nil, fmt.Errorf("令牌无效或已失效（可能是异地登录导致），请重新登录")
 			}
 		} else {
-			// 在内存中未找到此用户的 Token（可能是服务器重启或从未使用此用户登录）
-			return nil, fmt.Errorf("令牌不存在或已失效，请重新登录")
+			// 使用内存验证
+			if storedTokens, ok := TokenStore.Load(userid); ok {
+				if tokenList, ok := storedTokens.([]string); ok {
+					found := false
+					for _, t := range tokenList {
+						if t == tokenStr {
+							found = true
+							break
+						}
+					}
+					if !found {
+						return nil, fmt.Errorf("令牌无效或已失效（可能是异地登录导致），请重新登录")
+					}
+				} else {
+					return nil, fmt.Errorf("服务器内部错误: 令牌存储格式错误")
+				}
+			} else {
+				return nil, fmt.Errorf("令牌不存在或已失效，请重新登录")
+			}
 		}
 	}
 

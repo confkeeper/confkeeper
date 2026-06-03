@@ -38,25 +38,47 @@ func UserLogout(c *gin.Context) {
 			return
 		}
 
-		// 从内存中删除token
-		utils.TokenLock.Lock()
-		defer utils.TokenLock.Unlock()
-
-		if storedTokens, ok := utils.TokenStore.Load(userid); ok {
-			if tokenList, ok := storedTokens.([]string); ok {
-				// 从 token 列表中删除当前 token
+		if utils.EnableRedis {
+			// 使用 Redis 删除 token
+			tokenList, _ := utils.RedisLoadTokens(userid)
+			if tokenList != nil {
 				newTokenList := make([]string, 0)
 				for _, t := range tokenList {
 					if t != tokenString.(string) {
 						newTokenList = append(newTokenList, t)
 					}
 				}
-
-				// 如果还有其他 token，更新列表；否则删除整个条目
 				if len(newTokenList) > 0 {
-					utils.TokenStore.Store(userid, newTokenList)
+					if err := utils.RedisStoreTokens(userid, newTokenList); err != nil {
+						utils.TokenLock.Lock()
+						utils.TokenStore.Delete(userid)
+						utils.TokenLock.Unlock()
+					}
 				} else {
-					utils.TokenStore.Delete(userid)
+					utils.RedisDeleteTokens(userid)
+				}
+			}
+		} else {
+			// 从内存中删除token
+			utils.TokenLock.Lock()
+			defer utils.TokenLock.Unlock()
+
+			if storedTokens, ok := utils.TokenStore.Load(userid); ok {
+				if tokenList, ok := storedTokens.([]string); ok {
+					// 从 token 列表中删除当前 token
+					newTokenList := make([]string, 0)
+					for _, t := range tokenList {
+						if t != tokenString.(string) {
+							newTokenList = append(newTokenList, t)
+						}
+					}
+
+					// 如果还有其他 token，更新列表；否则删除整个条目
+					if len(newTokenList) > 0 {
+						utils.TokenStore.Store(userid, newTokenList)
+					} else {
+						utils.TokenStore.Delete(userid)
+					}
 				}
 			}
 		}
