@@ -47,6 +47,28 @@
 go run . -c=config/config.yaml
 ```
 
+### 配置说明
+
+#### JWT Token 存储
+
+JWT token 存储支持两种模式，通过 `jwt.enable_memory` 和 `jwt.redis` 配置控制：
+
+- `enable_memory: false` → 不存储 token，仅依赖 JWT 自身验证
+- `enable_memory: true` + `redis.addr` 为空 → token 存储在内存中（服务重启后失效）
+- `enable_memory: true` + `redis.addr` 有值 → token 存储在 Redis 中（服务重启后不失效，需确保 Redis 可用，连接失败会直接退出服务）
+
+```yaml
+jwt:
+  enable_memory: true
+  secret: your-secret
+  expire_time: 168
+  max_login_sessions: 1
+  redis:
+    addr: "127.0.0.1:6379"  # Redis 地址，为空则使用内存存储
+    password: ""             # Redis 密码
+    db: 0                    # Redis 数据库编号
+```
+
 ### 自动化
 
 目前使用`github actions`自动化,开发环境每个`commit`会自动编译docker镜像,打v1.0.0的标签的时候会编译docker镜像和二进制文件到`release`下

@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"time"
 
+	"os"
+
 	"github.com/redis/go-redis/v9"
 
 	"github.com/gookit/slog"
@@ -37,9 +39,8 @@ func InitRedis() {
 	defer cancel()
 
 	if err := RedisClient.Ping(ctx).Err(); err != nil {
-		EnableRedis = false
-		slog.Errorf("Redis 连接失败: %v，JWT token 将存储在内存中", err)
-		return
+		slog.Errorf("Redis 连接失败: %v", err)
+		os.Exit(1)
 	}
 
 	EnableRedis = true
