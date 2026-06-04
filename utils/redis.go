@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"os"
-
 	"github.com/redis/go-redis/v9"
 
 	"github.com/gookit/slog"
@@ -21,11 +19,11 @@ var (
 )
 
 // InitRedis 初始化 Redis 连接，当 enable_memory 为 true 且配置了 Redis addr 时启用
-func InitRedis() {
+func InitRedis() error {
 	if !config.Cfg.Jwt.EnableMemory || config.Cfg.Jwt.Redis.Host == "" {
 		EnableRedis = false
 		slog.Info("Redis 未启用，JWT token 将存储在内存中")
-		return
+		return nil
 	}
 
 	addr := fmt.Sprintf("%s:%d", config.Cfg.Jwt.Redis.Host, config.Cfg.Jwt.Redis.Port)
@@ -39,12 +37,12 @@ func InitRedis() {
 	defer cancel()
 
 	if err := RedisClient.Ping(ctx).Err(); err != nil {
-		slog.Errorf("Redis 连接失败: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("Redis 连接失败: %w", err)
 	}
 
 	EnableRedis = true
 	slog.Info("Redis 连接成功，JWT token 将存储在 Redis 中")
+	return nil
 }
 
 // redisTokenKey 生成 Redis 中存储用户 token 列表的 key

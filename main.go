@@ -52,7 +52,9 @@ func main() {
 	}
 	dal.Init()
 	captcha.Init()
-	utils.InitRedis()
+	if err := utils.InitRedis(); err != nil {
+		panic(err)
+	}
 	gin.ForceConsoleColor()
 	r := gin.Default()
 	r.Use(mw.StaticFileMiddleware(staticFS))
