@@ -73,7 +73,7 @@ func GenerateToken(userid uint, username string, expTime ...int) (string, error)
 
 		if EnableRedis {
 			// 使用 Redis 存储
-			if err := RedisAddToken(int(userid), tokenString, maxSessions, expireTime); err != nil {
+			if err := RedisAddToken(int(userid), tokenString, maxSessions); err != nil {
 				slog.Errorf("Redis 存储 token 失败: %v", err)
 				return "", fmt.Errorf("存储令牌失败: %w", err)
 			}
