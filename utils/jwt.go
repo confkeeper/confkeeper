@@ -73,12 +73,7 @@ func GenerateToken(userid uint, username string, expTime ...int) (string, error)
 
 		if EnableRedis {
 			// 使用 Redis 存储
-			tokens, _ := RedisLoadTokens(int(userid))
-			tokens = append(tokens, tokenString)
-			if len(tokens) > maxSessions {
-				tokens = tokens[len(tokens)-maxSessions:]
-			}
-			if err := RedisStoreTokens(int(userid), tokens); err != nil {
+			if err := RedisAddToken(int(userid), tokenString, maxSessions); err != nil {
 				slog.Errorf("Redis 存储 token 失败: %v", err)
 			}
 		} else {
@@ -184,7 +179,7 @@ func ParseToken(tokenStr string) (jwt.MapClaims, error) {
 			if err != nil {
 				return nil, fmt.Errorf("服务器内部错误: Redis 读取失败")
 			}
-			if tokenList == nil {
+			if len(tokenList) == 0 {
 				return nil, fmt.Errorf("令牌不存在或已失效，请重新登录")
 			}
 			found := false

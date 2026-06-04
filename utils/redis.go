@@ -3,7 +3,6 @@ package utils
 import (
 	"confkeeper/utils/config"
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -52,25 +51,27 @@ func redisTokenKey(userid int) string {
 	return fmt.Sprintf("jwt:tokens:%d", userid)
 }
 
-// RedisStoreTokens 将用户的 token 列表存储到 Redis
-func RedisStoreTokens(userid int, tokens []string) error {
+// RedisAddToken 将用户的 token 添加到 Redis 列表中，并限制最大会话数
+func RedisAddToken(userid int, token string, maxSessions int) error {
 	if RedisClient == nil {
 		return fmt.Errorf("Redis 未连接")
 	}
 
 	ctx := context.Background()
-	data, err := json.Marshal(tokens)
-	if err != nil {
-		return fmt.Errorf("序列化 token 列表失败: %w", err)
-	}
+	key := redisTokenKey(userid)
 
-	// 设置过期时间为 JWT 过期时间的 2 倍，确保 token 过期后 Redis 数据也能清理
+	pipe := RedisClient.TxPipeline()
+	pipe.RPush(ctx, key, token)
+	pipe.LTrim(ctx, key, int64(-maxSessions), -1)
+
 	expireHours := time.Duration(config.Cfg.Jwt.ExpireTime*2) * time.Hour
 	if expireHours < time.Hour {
 		expireHours = time.Hour
 	}
+	pipe.Expire(ctx, key, expireHours)
 
-	return RedisClient.Set(ctx, redisTokenKey(userid), data, expireHours).Err()
+	_, err := pipe.Exec(ctx)
+	return err
 }
 
 // RedisLoadTokens 从 Redis 加载用户的 token 列表
@@ -80,28 +81,15 @@ func RedisLoadTokens(userid int) ([]string, error) {
 	}
 
 	ctx := context.Background()
-	data, err := RedisClient.Get(ctx, redisTokenKey(userid)).Bytes()
-	if err != nil {
-		if err == redis.Nil {
-			return nil, nil // key 不存在，返回 nil
-		}
-		return nil, fmt.Errorf("从 Redis 获取 token 列表失败: %w", err)
-	}
-
-	var tokens []string
-	if err := json.Unmarshal(data, &tokens); err != nil {
-		return nil, fmt.Errorf("反序列化 token 列表失败: %w", err)
-	}
-
-	return tokens, nil
+	return RedisClient.LRange(ctx, redisTokenKey(userid), 0, -1).Result()
 }
 
-// RedisDeleteTokens 从 Redis 删除用户的 token 列表
-func RedisDeleteTokens(userid int) error {
+// RedisRemoveToken 从 Redis 列表中删除指定的 token
+func RedisRemoveToken(userid int, token string) error {
 	if RedisClient == nil {
 		return fmt.Errorf("Redis 未连接")
 	}
 
 	ctx := context.Background()
-	return RedisClient.Del(ctx, redisTokenKey(userid)).Err()
+	return RedisClient.LRem(ctx, redisTokenKey(userid), 0, token).Err()
 }

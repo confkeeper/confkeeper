@@ -40,24 +40,7 @@ func UserLogout(c *gin.Context) {
 
 		if utils.EnableRedis {
 			// 使用 Redis 删除 token
-			tokenList, _ := utils.RedisLoadTokens(userid)
-			if tokenList != nil {
-				newTokenList := make([]string, 0)
-				for _, t := range tokenList {
-					if t != tokenString.(string) {
-						newTokenList = append(newTokenList, t)
-					}
-				}
-				if len(newTokenList) > 0 {
-					if err := utils.RedisStoreTokens(userid, newTokenList); err != nil {
-						utils.TokenLock.Lock()
-						utils.TokenStore.Delete(userid)
-						utils.TokenLock.Unlock()
-					}
-				} else {
-					utils.RedisDeleteTokens(userid)
-				}
-			}
+			_ = utils.RedisRemoveToken(userid, tokenString.(string))
 		} else {
 			// 从内存中删除token
 			utils.TokenLock.Lock()
