@@ -51,10 +51,10 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	dal.Init()
-	captcha.Init()
 	if err := utils.InitRedis(); err != nil {
 		panic(err)
 	}
+	captcha.Init()
 	gin.ForceConsoleColor()
 	r := gin.Default()
 	r.Use(mw.StaticFileMiddleware(staticFS))
