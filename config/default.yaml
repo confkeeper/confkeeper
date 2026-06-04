@@ -14,7 +14,8 @@ jwt:
   expire_time: 168
   max_login_sessions: 1
   redis:
-    addr: ""
+    host: ""
+    port: 6379
     password: ""
     db: 0
 db:

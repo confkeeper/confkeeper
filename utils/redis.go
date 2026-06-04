@@ -22,14 +22,15 @@ var (
 
 // InitRedis 初始化 Redis 连接，当 enable_memory 为 true 且配置了 Redis addr 时启用
 func InitRedis() {
-	if !config.Cfg.Jwt.EnableMemory || config.Cfg.Jwt.Redis.Addr == "" {
+	if !config.Cfg.Jwt.EnableMemory || config.Cfg.Jwt.Redis.Host == "" {
 		EnableRedis = false
 		slog.Info("Redis 未启用，JWT token 将存储在内存中")
 		return
 	}
 
+	addr := fmt.Sprintf("%s:%d", config.Cfg.Jwt.Redis.Host, config.Cfg.Jwt.Redis.Port)
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     config.Cfg.Jwt.Redis.Addr,
+		Addr:     addr,
 		Password: config.Cfg.Jwt.Redis.Password,
 		DB:       config.Cfg.Jwt.Redis.DB,
 	})
