@@ -56,7 +56,12 @@ func RedisAddToken(userid int, token string, maxSessions int) error {
 		return fmt.Errorf("Redis 未连接")
 	}
 
-	ctx := context.Background()
+	if maxSessions <= 0 {
+		maxSessions = 1
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	key := redisTokenKey(userid)
 
 	pipe := RedisClient.TxPipeline()
@@ -79,7 +84,8 @@ func RedisLoadTokens(userid int) ([]string, error) {
 		return nil, fmt.Errorf("Redis 未连接")
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	return RedisClient.LRange(ctx, redisTokenKey(userid), 0, -1).Result()
 }
 
@@ -89,6 +95,7 @@ func RedisRemoveToken(userid int, token string) error {
 		return fmt.Errorf("Redis 未连接")
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	return RedisClient.LRem(ctx, redisTokenKey(userid), 0, token).Err()
 }

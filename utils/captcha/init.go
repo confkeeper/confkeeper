@@ -10,7 +10,6 @@ import (
 
 	"github.com/gookit/slog"
 	"github.com/mojocn/base64Captcha"
-	"github.com/redis/go-redis/v9"
 )
 
 // Driver 验证码驱动 - 延迟初始化
@@ -29,13 +28,21 @@ func redisCaptchaKey(id string) string {
 
 // Set 将验证码存入 Redis
 func (s *RedisStore) Set(id string, value string) error {
-	ctx := context.Background()
+	if utils.RedisClient == nil {
+		return fmt.Errorf("Redis 未连接")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	return utils.RedisClient.Set(ctx, redisCaptchaKey(id), value, s.expiration).Err()
 }
 
 // Get 从 Redis 获取验证码，clear 为 true 时删除
 func (s *RedisStore) Get(id string, clear bool) string {
-	ctx := context.Background()
+	if utils.RedisClient == nil {
+		return ""
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 	key := redisCaptchaKey(id)
 	val, err := utils.RedisClient.Get(ctx, key).Result()
 	if err != nil {
@@ -88,6 +95,3 @@ func Init() {
 
 // ensure RedisStore implements base64Captcha.Store at compile time
 var _ base64Captcha.Store = (*RedisStore)(nil)
-
-// ensure redis.Client is imported (used indirectly via utils)
-var _ = (*redis.Client)(nil)
