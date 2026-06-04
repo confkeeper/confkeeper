@@ -54,8 +54,8 @@ go run . -c=config/config.yaml
 JWT token 存储支持两种模式，通过 `jwt.enable_memory` 和 `jwt.redis` 配置控制：
 
 - `enable_memory: false` → 不存储 token，仅依赖 JWT 自身验证
-- `enable_memory: true` + `redis.addr` 为空 → token 存储在内存中（服务重启后失效）
-- `enable_memory: true` + `redis.addr` 有值 → token 存储在 Redis 中（服务重启后不失效，需确保 Redis 可用，连接失败会直接退出服务）
+- `enable_memory: true` + `redis.host` 为空 → token 存储在内存中（服务重启后失效）
+- `enable_memory: true` + `redis.host` 有值 → token 存储在 Redis 中（服务重启后不失效，需确保 Redis 可用，连接失败会直接退出服务）
 
 ```yaml
 jwt:
@@ -64,7 +64,8 @@ jwt:
   expire_time: 168
   max_login_sessions: 1
   redis:
-    addr: "127.0.0.1:6379"  # Redis 地址，为空则使用内存存储
+    host: "127.0.0.1"        # Redis 主机地址，为空则使用内存存储
+    port: 6379               # Redis 端口
     password: ""             # Redis 密码
     db: 0                    # Redis 数据库编号
 ```
