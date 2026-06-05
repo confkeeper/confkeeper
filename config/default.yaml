@@ -13,6 +13,11 @@ jwt:
   secret: 123qazwsxedc456
   expire_time: 168
   max_login_sessions: 1
+  redis:
+    host: ""
+    port: 6379
+    password: ""
+    db: 0
 db:
   type: sqlite3
   database: confkeerer

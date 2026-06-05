@@ -4,6 +4,7 @@ import (
 	"confkeeper/biz/dal"
 	"confkeeper/biz/mw"
 	genrouter "confkeeper/biz/router"
+	"confkeeper/utils"
 	"confkeeper/utils/captcha"
 	"confkeeper/utils/config"
 	"confkeeper/utils/cron"
@@ -13,9 +14,9 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/buyfakett/qingfeng"
 	"github.com/gin-gonic/gin"
 	"github.com/gookit/slog"
-	"github.com/wdcbot/qingfeng"
 )
 
 //go:embed config/default.yaml
@@ -50,6 +51,9 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	dal.Init()
+	if err := utils.InitRedis(); err != nil {
+		panic(err)
+	}
 	captcha.Init()
 	gin.ForceConsoleColor()
 	r := gin.Default()
@@ -72,7 +76,7 @@ func main() {
 			DocJSON:  swaggerJSON,
 			UITheme:  qingfeng.ThemeModern,
 			Logo:     logoBase64,
-			LogoLink: "https://github.com/confkeeper/confkeeper",
+			LogoLink: "https://github.com/confkeeper/confkeeper-gin-dev",
 		}))
 	}
 

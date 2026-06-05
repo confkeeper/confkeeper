@@ -37,10 +37,18 @@ type DbConfig struct {
 }
 
 type JwtConfig struct {
-	EnableMemory     bool   `mapstructure:"enable_memory"`
-	Secret           string `mapstructure:"secret"`
-	ExpireTime       int    `mapstructure:"expire_time"`
-	MaxLoginSessions int    `mapstructure:"max_login_sessions"`
+	EnableMemory     bool        `mapstructure:"enable_memory"`
+	Secret           string      `mapstructure:"secret"`
+	ExpireTime       int         `mapstructure:"expire_time"`
+	MaxLoginSessions int         `mapstructure:"max_login_sessions"`
+	Redis            RedisConfig `mapstructure:"redis"`
+}
+
+type RedisConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
 type AdminConfig struct {
