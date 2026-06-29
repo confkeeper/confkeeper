@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"image/color"
+	"strings"
 	"time"
 
 	"github.com/gookit/slog"
@@ -33,7 +34,7 @@ func (s *RedisStore) Set(id string, value string) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	return utils.RedisClient.Set(ctx, redisCaptchaKey(id), value, s.expiration).Err()
+	return utils.RedisClient.Set(ctx, redisCaptchaKey(id), strings.ToLower(value), s.expiration).Err()
 }
 
 // Get 从 Redis 获取验证码，clear 为 true 时删除
@@ -57,7 +58,7 @@ func (s *RedisStore) Get(id string, clear bool) string {
 // Verify 验证验证码
 func (s *RedisStore) Verify(id, answer string, clear bool) bool {
 	v := s.Get(id, clear)
-	return v == answer
+	return v == strings.ToLower(answer)
 }
 
 // Init 初始化验证码配置
