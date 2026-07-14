@@ -13,7 +13,10 @@ import (
 )
 
 // blameMaxLines 超过该行数则跳过 blame 计算，避免大文件的 O(n*m) 性能问题
-const blameMaxLines = 2000
+const blameMaxLines = 5000
+
+// maxVersions 超过该版本则跳过 blame 计算，避免大文件的 O(n*m) 性能问题
+const maxVersions = 100
 
 type BlameUriReq struct {
 	ConfigId string `uri:"config_id" binding:"required"`
@@ -112,10 +115,20 @@ func computeBlame(versions []*model.ConfigInfo) ([]*BlameRun, int) {
 		return nil, 0
 	}
 
+	if len(versions) > maxVersions {
+		versions = versions[len(versions)-maxVersions:]
+	}
+
 	latestLines := splitLines(versions[len(versions)-1].Content)
 	totalLines := len(latestLines)
 	if totalLines == 0 || totalLines > blameMaxLines {
 		return nil, totalLines
+	}
+
+	for _, v := range versions {
+		if strings.Count(v.Content, "\n") > blameMaxLines {
+			return nil, totalLines
+		}
 	}
 
 	// blame[i] = line i (0-indexed) 对应的 versions 数组下标
