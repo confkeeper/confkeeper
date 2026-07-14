@@ -223,7 +223,7 @@ func ConfigBlame(c *gin.Context) {
 	// 获取所有版本（按版本升序，过滤 tenant）
 	versions, err := dal.GetAllVersionsByDataIdGroupAndTenantAsc(configInfoData.DataID, configInfoData.GroupID, configInfoData.TenantID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, &BlameResp{
+		c.JSON(http.StatusOK, &BlameResp{
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,
 				Msg:  "数据库查询错误: " + err.Error(),
