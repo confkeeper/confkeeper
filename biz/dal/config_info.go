@@ -159,6 +159,16 @@ func GetAllVersionsByDataIdAndGroup(dataId string, groupId string) ([]*model.Con
 	return configInfos, err
 }
 
+// GetAllVersionsByDataIdGroupAndTenantAsc 根据data_id、group_id、tenant_id查询所有版本，按版本升序返回
+func GetAllVersionsByDataIdGroupAndTenantAsc(dataId string, groupId string, tenantId string) ([]*model.ConfigInfo, error) {
+	var configInfos []*model.ConfigInfo
+	err := DB.Model(&model.ConfigInfo{}).
+		Where("data_id = ? AND group_id = ? AND tenant_id = ?", dataId, groupId, tenantId).
+		Order("version ASC").
+		Find(&configInfos).Error
+	return configInfos, err
+}
+
 // GetConfigInfoByDataIdGroupAndTenant 根据data_id、group_id和tenant_id查询配置
 func GetConfigInfoByDataIdGroupAndTenant(dataId string, groupId string, tenantId string) (*model.ConfigInfo, error) {
 	var configInfo model.ConfigInfo

@@ -25,6 +25,7 @@ func configInfoRoutes(apiGroup *gin.RouterGroup) {
 		configGroup.GET("/get_by_user", hConfigInfo.GetConfigByUser)
 		configGroup.HEAD("/get_by_user", hConfigInfo.GetConfigByUser)
 		configGroup.GET("/get_version/:config_id", mw.JWTAuthMiddleware(), hConfigInfo.ConfigVersion)
+		configGroup.GET("/blame/:config_id", mw.JWTAuthMiddleware(), hConfigInfo.ConfigBlame)
 		configGroup.POST("/clone", mw.JWTAuthMiddleware(), hConfigInfo.ConfigClone)
 		configGroup.POST("/cleanup", mw.JWTAuthMiddleware(utils.AuthOptions{CheckAdmin: true}), hConfigInfo.ConfigCleanup)
 		configGroup.GET("/language_list", hConfigInfo.ConfigLanguageList)
