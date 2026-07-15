@@ -2,7 +2,6 @@ package user
 
 import (
 	"confkeeper/biz/dal"
-	"confkeeper/biz/handler"
 	"confkeeper/utils"
 	"net/http"
 
@@ -14,13 +13,8 @@ type NacosLoginReq struct {
 	Password string `form:"password" binding:"required,min=1,max=255"`
 }
 
-type NacosLoginData struct {
-	AccessToken string `json:"accessToken"`
-}
-
 type NacosLoginResp struct {
-	handler.CommonResp
-	Data *NacosLoginData `json:"data"`
+	AccessToken string `json:"accessToken"`
 }
 
 // NacosUserLogin 用户登录(nacos兼容)
@@ -37,32 +31,26 @@ type NacosLoginResp struct {
 func NacosUserLogin(c *gin.Context) {
 	req := new(NacosLoginReq)
 	if err := c.ShouldBind(req); err != nil {
-		handler.ParamError(c, err)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 	resp := new(NacosLoginResp)
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		handler.JSON(c, http.StatusOK, handler.Code_DBErr, err.Error())
+		c.JSON(http.StatusOK, gin.H{"msg": err.Error()})
 		return
 	}
 
 	if !utils.CheckPasswordHash(req.Password, userData.Password) {
-		handler.JSON(c, http.StatusOK, handler.Code_PasswordErr, "密码错误")
+		c.JSON(http.StatusOK, gin.H{"msg": "密码错误"})
 		return
 	}
 
 	var token string
 	token, _ = utils.GenerateToken(userData.ID, req.Username, 1)
 
-	resp.CommonResp = handler.CommonResp{
-		Code: handler.Code_Success,
-		Msg:  "登录成功",
-	}
-	resp.Data = &NacosLoginData{
-		AccessToken: token,
-	}
+	resp.AccessToken = token
 
 	c.JSON(http.StatusOK, resp)
 }
