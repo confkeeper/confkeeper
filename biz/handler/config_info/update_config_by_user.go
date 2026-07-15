@@ -51,7 +51,7 @@ func UpdateConfigByUser(c *gin.Context) {
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		handler.JSON(c, http.StatusOK, handler.Code_DBErr, err.Error())
+		handler.JSON(c, http.StatusOK, handler.Code_DBErr, "数据库查询失败")
 		return
 	}
 	if userData == nil {
