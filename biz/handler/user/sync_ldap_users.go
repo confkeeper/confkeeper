@@ -20,8 +20,7 @@ type SyncLDAPUsersData struct {
 
 // SyncLDAPUsersResp 同步LDAP用户响应
 type SyncLDAPUsersResp struct {
-	Code handler.Code       `json:"code"` // 响应码
-	Msg  string             `json:"msg"`  // 响应消息
+	handler.CommonResp
 	Data *SyncLDAPUsersData `json:"data"` // 响应数据
 }
 
@@ -37,8 +36,10 @@ type SyncLDAPUsersResp struct {
 func SyncLDAPUsers(c *gin.Context) {
 	if !config.Cfg.Ldap.Enabled {
 		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-			Code: handler.Code_Err,
-			Msg:  "LDAP未启用",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "LDAP未启用",
+			},
 		})
 		return
 	}
@@ -48,8 +49,10 @@ func SyncLDAPUsers(c *gin.Context) {
 	if err != nil {
 		slog.Errorf("从LDAP获取用户失败: %v", err)
 		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-			Code: handler.Code_Err,
-			Msg:  "从LDAP获取用户失败",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "从LDAP获取用户失败",
+			},
 		})
 		return
 	}
@@ -59,8 +62,10 @@ func SyncLDAPUsers(c *gin.Context) {
 	if err != nil {
 		slog.Errorf("查询本地用户失败: %v", err)
 		c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-			Code: handler.Code_DBErr,
-			Msg:  "查询本地用户失败",
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_DBErr,
+				Msg:  "查询本地用户失败",
+			},
 		})
 		return
 	}
@@ -98,16 +103,20 @@ func SyncLDAPUsers(c *gin.Context) {
 		if err != nil {
 			slog.Errorf("添加用户失败: %v", err)
 			c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-				Code: handler.Code_DBErr,
-				Msg:  "添加用户失败",
+				CommonResp: handler.CommonResp{
+					Code: handler.Code_DBErr,
+					Msg:  "添加用户失败",
+				},
 			})
 			return
 		}
 	}
 
 	c.JSON(http.StatusOK, &SyncLDAPUsersResp{
-		Code: handler.Code_Success,
-		Msg:  "同步完成",
+		CommonResp: handler.CommonResp{
+			Code: handler.Code_Success,
+			Msg:  "同步完成",
+		},
 		Data: &SyncLDAPUsersData{
 			SyncedUsers:    len(usersToAdd),
 			TotalLDAPUsers: len(ldapUsers),

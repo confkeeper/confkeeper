@@ -193,7 +193,7 @@ func computeBlame(versions []*model.ConfigInfo) ([]*BlameRun, int) {
 func ConfigBlame(c *gin.Context) {
 	req := new(BlameUriReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(BlameResp)

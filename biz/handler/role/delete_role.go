@@ -30,7 +30,7 @@ type DeleteRoleResp struct {
 func DeleteRole(c *gin.Context) {
 	req := new(DeleteReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(DeleteRoleResp)

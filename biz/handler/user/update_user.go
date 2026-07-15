@@ -40,11 +40,11 @@ func UpdateUser(c *gin.Context) {
 	req := new(UpdateReq)
 	uriReq := new(UpdateUriReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	if err := c.ShouldBindUri(uriReq); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(UpdateUserResp)

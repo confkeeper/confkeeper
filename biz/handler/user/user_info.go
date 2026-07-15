@@ -39,7 +39,7 @@ type InfoResp struct {
 func UserInfo(c *gin.Context) {
 	req := new(InfoReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(InfoResp)

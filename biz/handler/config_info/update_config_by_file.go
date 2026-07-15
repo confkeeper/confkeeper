@@ -40,7 +40,7 @@ type UpdateConfigByFileResp struct {
 func UpdateConfigByFile(c *gin.Context) {
 	req := new(UpdateByFileReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(UpdateConfigByFileResp)

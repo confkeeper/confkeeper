@@ -24,26 +24,17 @@ func CheckUserEnabled(c *gin.Context) bool {
 
 	user, err := dal.GetUserByID(uid)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, map[string]interface{}{
-			"code": handler.Code_Unauthorized,
-			"msg":  "查询用户信息失败",
-		})
+		handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, "查询用户信息失败")
 		c.Abort()
 		return true
 	}
 	if user == nil {
-		c.JSON(http.StatusUnauthorized, map[string]interface{}{
-			"code": handler.Code_Unauthorized,
-			"msg":  "用户不存在",
-		})
+		handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, "用户不存在")
 		c.Abort()
 		return true
 	}
 	if !user.Enable {
-		c.JSON(http.StatusUnauthorized, map[string]interface{}{
-			"code": handler.Code_UserErr,
-			"msg":  "用户已被禁用",
-		})
+		handler.JSON(c, http.StatusUnauthorized, handler.Code_UserErr, "用户已被禁用")
 		c.Abort()
 		return true
 	}
@@ -63,10 +54,7 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 		// 获取 Authorization Header
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, map[string]interface{}{
-				"code": http.StatusUnauthorized,
-				"msg":  "缺少token",
-			})
+			handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, "缺少token")
 			c.Abort() // 终止后续处理
 			return
 		}
@@ -74,10 +62,7 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 		// 提取token（去除Bearer前缀）
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 		if token == "" {
-			c.JSON(http.StatusUnauthorized, map[string]interface{}{
-				"code": http.StatusUnauthorized,
-				"msg":  "token格式错误",
-			})
+			handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, "token格式错误")
 			c.Abort() // 终止后续处理
 			return
 		}
@@ -85,10 +70,7 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 		// 验证 token
 		claims, err := utils.ParseToken(token)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, map[string]interface{}{
-				"code": http.StatusUnauthorized,
-				"msg":  err.Error(),
-			})
+			handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, err.Error())
 			c.Abort() // 终止后续处理
 			return
 		}
@@ -97,10 +79,7 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 		if opt.IsShortTerm {
 			tokenType, ok := claims["token_type"].(string)
 			if !ok || tokenType != "short_term" {
-				c.JSON(http.StatusUnauthorized, map[string]interface{}{
-					"code": http.StatusUnauthorized,
-					"msg":  "没有权限",
-				})
+				handler.JSON(c, http.StatusUnauthorized, handler.Code_Unauthorized, "没有权限")
 				c.Abort() // 终止后续处理
 				return
 			}
@@ -118,10 +97,7 @@ func JWTAuthMiddleware(opts ...utils.AuthOptions) gin.HandlerFunc {
 			// 检查是否为管理员
 			err := utils.IsAdmin(c)
 			if err != nil {
-				c.JSON(http.StatusOK, map[string]interface{}{
-					"code": http.StatusUnauthorized,
-					"msg":  "不是管理员",
-				})
+				handler.JSON(c, http.StatusOK, handler.Code_Unauthorized, "不是管理员")
 				c.Abort() // 终止后续处理
 				return
 			}

@@ -32,7 +32,7 @@ type BatchDeleteConfigResp struct {
 func BatchDeleteConfig(c *gin.Context) {
 	req := new(BatchDeleteReq)
 	if err := c.ShouldBindJSON(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(BatchDeleteConfigResp)

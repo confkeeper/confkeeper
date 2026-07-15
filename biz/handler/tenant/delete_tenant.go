@@ -31,7 +31,7 @@ type DeleteTenantResp struct {
 func DeleteTenant(c *gin.Context) {
 	req := new(DeleteReq)
 	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(DeleteTenantResp)

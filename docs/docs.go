@@ -97,6 +97,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/config/blame/{config_id}": {
+            "get": {
+                "description": "通过config_id查询所有版本，计算每行最后修改人和时间，按行号区间返回",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "配置"
+                ],
+                "summary": "获取配置行修改记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "配置ID",
+                        "name": "config_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/config_info.BlameResp"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/config_info.BlameResp"
+                        }
+                    },
+                    "404": {
+                        "description": "配置不存在",
+                        "schema": {
+                            "$ref": "#/definitions/config_info.BlameResp"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/config_info.BlameResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/config/cleanup": {
             "post": {
                 "security": [
@@ -2062,6 +2112,56 @@ const docTemplate = `{
                 }
             }
         },
+        "config_info.BlameData": {
+            "type": "object",
+            "properties": {
+                "runs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/config_info.BlameRun"
+                    }
+                },
+                "total_lines": {
+                    "type": "integer"
+                }
+            }
+        },
+        "config_info.BlameResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/handler.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/config_info.BlameData"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "config_info.BlameRun": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "end_line": {
+                    "description": "1-indexed",
+                    "type": "integer"
+                },
+                "start_line": {
+                    "description": "1-indexed",
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
         "config_info.CloneItems": {
             "type": "object",
             "required": [
@@ -3047,12 +3147,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "description": "响应码",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/handler.Code"
-                        }
-                    ]
+                    "$ref": "#/definitions/handler.Code"
                 },
                 "data": {
                     "description": "响应数据",
@@ -3063,7 +3158,6 @@ const docTemplate = `{
                     ]
                 },
                 "msg": {
-                    "description": "响应消息",
                     "type": "string"
                 }
             }

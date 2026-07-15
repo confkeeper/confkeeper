@@ -42,7 +42,7 @@ type ContentResp struct {
 func ConfigContent(c *gin.Context) {
 	req := new(ContentReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(ContentResp)

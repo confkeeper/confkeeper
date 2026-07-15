@@ -45,7 +45,7 @@ type ConfigCloneResp struct {
 func ConfigClone(c *gin.Context) {
 	req := new(CloneReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(ConfigCloneResp)

@@ -44,18 +44,22 @@ type UpdateConfigByUserResp struct {
 func UpdateConfigByUser(c *gin.Context) {
 	req := new(UpdateConfigByUserReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(UpdateConfigByUserResp)
 
 	userData, err := dal.UserLogin(req.Username)
 	if err != nil {
-		c.String(http.StatusOK, err.Error())
+		handler.JSON(c, http.StatusOK, handler.Code_DBErr, "数据库查询失败")
+		return
+	}
+	if userData == nil {
+		handler.JSON(c, http.StatusOK, handler.Code_PasswordErr, "用户不存在")
 		return
 	}
 	if !utils.CheckPasswordHash(req.Password, userData.Password) {
-		c.String(http.StatusOK, "密码错误")
+		handler.JSON(c, http.StatusOK, handler.Code_PasswordErr, "密码错误")
 		return
 	}
 	c.Set("userid", int(userData.ID))
