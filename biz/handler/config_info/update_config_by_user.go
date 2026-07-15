@@ -54,6 +54,10 @@ func UpdateConfigByUser(c *gin.Context) {
 		handler.JSON(c, http.StatusOK, handler.Code_DBErr, err.Error())
 		return
 	}
+	if userData == nil {
+		handler.JSON(c, http.StatusOK, handler.Code_PasswordErr, "用户不存在")
+		return
+	}
 	if !utils.CheckPasswordHash(req.Password, userData.Password) {
 		handler.JSON(c, http.StatusOK, handler.Code_PasswordErr, "密码错误")
 		return

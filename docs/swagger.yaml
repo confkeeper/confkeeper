@@ -353,14 +353,6 @@ definitions:
     - Code_AlreadyExists
     - Code_CaptchaErr
     - Code_UserErr
-  handler.CommonJSONResp:
-    properties:
-      code:
-        $ref: '#/definitions/handler.Code'
-      data: {}
-      msg:
-        type: string
-    type: object
   permission.CreatePermissionResp:
     properties:
       code:
@@ -693,11 +685,6 @@ definitions:
       msg:
         type: string
     type: object
-  user.NacosLoginData:
-    properties:
-      accessToken:
-        type: string
-    type: object
   user.NacosLoginReq:
     properties:
       password:
@@ -714,11 +701,7 @@ definitions:
     type: object
   user.NacosLoginResp:
     properties:
-      code:
-        $ref: '#/definitions/handler.Code'
-      data:
-        $ref: '#/definitions/user.NacosLoginData'
-      msg:
+      accessToken:
         type: string
     type: object
   user.SyncLDAPUsersData:
@@ -1015,20 +998,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
-          description: OK
+          description: 配置内容
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 获取配置(直接返回配置内容)
       tags:
       - 配置
@@ -1053,20 +1036,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
-          description: OK
+          description: 配置内容
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 获取配置(直接返回配置内容)
       tags:
       - 配置
@@ -1102,20 +1085,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 直接使用账号获取配置
       tags:
       - 配置
@@ -1150,20 +1133,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 直接使用账号获取配置
       tags:
       - 配置
@@ -2001,20 +1984,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 获取配置(nacos兼容)
       tags:
       - 配置
@@ -2045,20 +2028,20 @@ paths:
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "404":
           description: 配置不存在
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
         "500":
           description: 服务器错误
           schema:
-            $ref: '#/definitions/handler.CommonJSONResp'
+            type: string
       summary: 获取配置(nacos兼容)
       tags:
       - 配置

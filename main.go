@@ -2,6 +2,7 @@ package main
 
 import (
 	"confkeeper/biz/dal"
+	"confkeeper/biz/handler"
 	"confkeeper/biz/mw"
 	genrouter "confkeeper/biz/router"
 	"confkeeper/utils"
@@ -13,6 +14,7 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"fmt"
+	"net/http"
 
 	"github.com/buyfakett/qingfeng"
 	"github.com/gin-gonic/gin"
@@ -89,7 +91,9 @@ func main() {
 		slog.Infof("服务启动成功，地址为 http://localhost:%d", config.Cfg.Server.Port)
 	}
 
-	r.NoRoute(func(c *gin.Context) { c.JSON(404, gin.H{"code": 404, "msg": "你访问的页面不存在"}) })
+	r.NoRoute(func(c *gin.Context) {
+		handler.JSON(c, http.StatusNotFound, handler.Code(http.StatusNotFound), "你访问的页面不存在")
+	})
 
 	// 启动服务
 	port := fmt.Sprintf(":%d", config.Cfg.Server.Port)

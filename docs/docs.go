@@ -383,7 +383,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置"
@@ -414,21 +414,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "配置内容",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -439,7 +439,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置"
@@ -470,21 +470,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "配置内容",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -497,7 +497,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置"
@@ -544,19 +544,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -567,7 +567,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置"
@@ -614,19 +614,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -1895,7 +1895,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置",
@@ -1936,19 +1936,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -2025,7 +2025,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "配置",
@@ -2066,19 +2066,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "配置不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "服务器错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.CommonJSONResp"
+                            "type": "string"
                         }
                     }
                 }
@@ -2610,18 +2610,6 @@ const docTemplate = `{
                 "Code_UserErr"
             ]
         },
-        "handler.CommonJSONResp": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "$ref": "#/definitions/handler.Code"
-                },
-                "data": {},
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
         "permission.CreatePermissionResp": {
             "type": "object",
             "properties": {
@@ -3115,14 +3103,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user.NacosLoginData": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                }
-            }
-        },
         "user.NacosLoginReq": {
             "type": "object",
             "required": [
@@ -3145,13 +3125,7 @@ const docTemplate = `{
         "user.NacosLoginResp": {
             "type": "object",
             "properties": {
-                "code": {
-                    "$ref": "#/definitions/handler.Code"
-                },
-                "data": {
-                    "$ref": "#/definitions/user.NacosLoginData"
-                },
-                "msg": {
+                "accessToken": {
                     "type": "string"
                 }
             }

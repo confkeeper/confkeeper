@@ -50,5 +50,9 @@ func JSONData(c *gin.Context, httpStatus int, code Code, msg string, data any) {
 }
 
 func ParamError(c *gin.Context, err error) {
-	JSON(c, http.StatusBadRequest, Code_ParamErr, "参数错误: "+err.Error())
+	msg := "参数错误"
+	if err != nil {
+		msg += ": " + err.Error()
+	}
+	JSON(c, http.StatusBadRequest, Code_ParamErr, msg)
 }
