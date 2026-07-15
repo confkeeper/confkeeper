@@ -34,7 +34,7 @@ type DeletePermissionResp struct {
 func DeletePermission(c *gin.Context) {
 	req := new(DeleteReq)
 	if err := c.ShouldBindQuery(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(DeletePermissionResp)

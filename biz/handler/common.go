@@ -1,5 +1,11 @@
 package handler
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type Code int32
 
 const (
@@ -17,4 +23,32 @@ const (
 type CommonResp struct {
 	Code Code   `json:"code"`
 	Msg  string `json:"msg"`
+}
+
+type CommonJSONResp struct {
+	CommonResp
+	Data any `json:"data,omitempty"`
+}
+
+func JSON(c *gin.Context, httpStatus int, code Code, msg string) {
+	c.JSON(httpStatus, &CommonJSONResp{
+		CommonResp: CommonResp{
+			Code: code,
+			Msg:  msg,
+		},
+	})
+}
+
+func JSONData(c *gin.Context, httpStatus int, code Code, msg string, data any) {
+	c.JSON(httpStatus, &CommonJSONResp{
+		CommonResp: CommonResp{
+			Code: code,
+			Msg:  msg,
+		},
+		Data: data,
+	})
+}
+
+func ParamError(c *gin.Context, err error) {
+	JSON(c, http.StatusBadRequest, Code_ParamErr, "参数错误: "+err.Error())
 }

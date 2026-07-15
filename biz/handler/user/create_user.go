@@ -33,7 +33,7 @@ type CreateUserResp struct {
 func CreateUser(c *gin.Context) {
 	req := new(CreateReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(CreateUserResp)

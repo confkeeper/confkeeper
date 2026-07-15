@@ -49,7 +49,7 @@ type ListVersionResp struct {
 func ConfigVersion(c *gin.Context) {
 	req := new(ListVersionReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(ListVersionResp)

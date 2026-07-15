@@ -50,7 +50,7 @@ type ContentByParamsResp struct {
 func ConfigContentByParams(c *gin.Context) {
 	req := new(ContentByParamsReq)
 	if err := c.ShouldBindQuery(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(ContentByParamsResp)

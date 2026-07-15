@@ -16,6 +16,39 @@ definitions:
     required:
     - config_ids
     type: object
+  config_info.BlameData:
+    properties:
+      runs:
+        items:
+          $ref: '#/definitions/config_info.BlameRun'
+        type: array
+      total_lines:
+        type: integer
+    type: object
+  config_info.BlameResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      data:
+        $ref: '#/definitions/config_info.BlameData'
+      msg:
+        type: string
+    type: object
+  config_info.BlameRun:
+    properties:
+      author:
+        type: string
+      create_time:
+        type: string
+      end_line:
+        description: 1-indexed
+        type: integer
+      start_line:
+        description: 1-indexed
+        type: integer
+      version:
+        type: integer
+    type: object
   config_info.CloneItems:
     properties:
       config_id:
@@ -320,6 +353,14 @@ definitions:
     - Code_AlreadyExists
     - Code_CaptchaErr
     - Code_UserErr
+  handler.CommonJSONResp:
+    properties:
+      code:
+        $ref: '#/definitions/handler.Code'
+      data: {}
+      msg:
+        type: string
+    type: object
   permission.CreatePermissionResp:
     properties:
       code:
@@ -652,6 +693,11 @@ definitions:
       msg:
         type: string
     type: object
+  user.NacosLoginData:
+    properties:
+      accessToken:
+        type: string
+    type: object
   user.NacosLoginReq:
     properties:
       password:
@@ -668,7 +714,11 @@ definitions:
     type: object
   user.NacosLoginResp:
     properties:
-      accessToken:
+      code:
+        $ref: '#/definitions/handler.Code'
+      data:
+        $ref: '#/definitions/user.NacosLoginData'
+      msg:
         type: string
     type: object
   user.SyncLDAPUsersData:
@@ -683,15 +733,12 @@ definitions:
   user.SyncLDAPUsersResp:
     properties:
       code:
-        allOf:
-        - $ref: '#/definitions/handler.Code'
-        description: 响应码
+        $ref: '#/definitions/handler.Code'
       data:
         allOf:
         - $ref: '#/definitions/user.SyncLDAPUsersData'
         description: 响应数据
       msg:
-        description: 响应消息
         type: string
     type: object
   user.UpdateReq:
@@ -765,6 +812,39 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 批量删除配置
+      tags:
+      - 配置
+  /api/config/blame/{config_id}:
+    get:
+      consumes:
+      - application/json
+      description: 通过config_id查询所有版本，计算每行最后修改人和时间，按行号区间返回
+      parameters:
+      - description: 配置ID
+        in: path
+        name: config_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config_info.BlameResp'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/config_info.BlameResp'
+        "404":
+          description: 配置不存在
+          schema:
+            $ref: '#/definitions/config_info.BlameResp'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/config_info.BlameResp'
+      summary: 获取配置行修改记录
       tags:
       - 配置
   /api/config/cleanup:
@@ -935,20 +1015,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
-          description: 配置内容
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 获取配置(直接返回配置内容)
       tags:
       - 配置
@@ -973,20 +1053,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
-          description: 配置内容
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 获取配置(直接返回配置内容)
       tags:
       - 配置
@@ -1022,20 +1102,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 直接使用账号获取配置
       tags:
       - 配置
@@ -1070,20 +1150,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 直接使用账号获取配置
       tags:
       - 配置
@@ -1921,20 +2001,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 获取配置(nacos兼容)
       tags:
       - 配置
@@ -1965,20 +2045,20 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "404":
           description: 配置不存在
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
         "500":
           description: 服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/handler.CommonJSONResp'
       summary: 获取配置(nacos兼容)
       tags:
       - 配置

@@ -31,7 +31,7 @@ type EditRoleResp struct {
 func EditRole(c *gin.Context) {
 	req := new(EditReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(EditRoleResp)

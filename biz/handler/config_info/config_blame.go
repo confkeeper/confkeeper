@@ -193,7 +193,12 @@ func computeBlame(versions []*model.ConfigInfo) ([]*BlameRun, int) {
 func ConfigBlame(c *gin.Context) {
 	req := new(BlameUriReq)
 	if err := c.ShouldBindUri(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, &BlameResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_ParamErr,
+				Msg:  "参数错误: " + err.Error(),
+			},
+		})
 		return
 	}
 	resp := new(BlameResp)

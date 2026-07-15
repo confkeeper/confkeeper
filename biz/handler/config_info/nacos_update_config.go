@@ -46,12 +46,12 @@ type NacosUpdateConfigResp struct {
 func NacosUpdateConfig(c *gin.Context) {
 	req := new(NacosUpdateReq)
 	if err := c.ShouldBind(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	uriReq := new(NacosUpdateTokenReq)
 	if err := c.ShouldBindQuery(uriReq); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(NacosUpdateConfigResp)

@@ -42,7 +42,7 @@ type ListResp struct {
 func TenantList(c *gin.Context) {
 	req := new(ListReq)
 	if err := c.ShouldBindQuery(req); err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		handler.ParamError(c, err)
 		return
 	}
 	resp := new(ListResp)
