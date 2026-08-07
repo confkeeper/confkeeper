@@ -131,6 +131,8 @@ definitions:
         type: string
       type:
         type: string
+      version:
+        type: integer
     type: object
   config_info.ContentResp:
     properties:
@@ -326,10 +328,15 @@ definitions:
         maxLength: 255
         minLength: 1
         type: string
+      oldversion:
+        minimum: 1
+        type: integer
       type:
         maxLength: 255
         minLength: 1
         type: string
+    required:
+    - oldversion
     type: object
   handler.Code:
     enum:

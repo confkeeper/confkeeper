@@ -2283,6 +2283,9 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                },
+                "version": {
+                    "type": "integer"
                 }
             }
         },
@@ -2564,6 +2567,9 @@ const docTemplate = `{
         },
         "config_info.UpdateReq": {
             "type": "object",
+            "required": [
+                "oldversion"
+            ],
             "properties": {
                 "content": {
                     "type": "string"
@@ -2577,6 +2583,10 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
+                },
+                "oldversion": {
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "type": {
                     "type": "string",

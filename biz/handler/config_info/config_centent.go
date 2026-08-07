@@ -21,6 +21,7 @@ type ContentData struct {
 	DataId   string `json:"data_id"`
 	GroupId  string `json:"group_id"`
 	TenantId string `json:"tenant_id"`
+	Version  int    `json:"version"`
 }
 
 type ContentResp struct {
@@ -94,6 +95,7 @@ func ConfigContent(c *gin.Context) {
 		DataId:   configInfoData.DataID,
 		GroupId:  configInfoData.GroupID,
 		TenantId: configInfoData.TenantID,
+		Version:  configInfoData.Version,
 	}
 
 	c.JSON(http.StatusOK, resp)
