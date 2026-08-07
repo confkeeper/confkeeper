@@ -14,10 +14,11 @@ import (
 )
 
 type UpdateReq struct {
-	DataId  *string `json:"data_id" binding:"omitempty,min=1,max=255"`
-	GroupId *string `json:"group_id" binding:"omitempty,min=1,max=255"`
-	Content *string `json:"content" binding:"omitempty"`
-	Type    *string `json:"type" binding:"omitempty,min=1,max=255"`
+	DataId     *string `json:"data_id" binding:"omitempty,min=1,max=255"`
+	GroupId    *string `json:"group_id" binding:"omitempty,min=1,max=255"`
+	Content    *string `json:"content" binding:"omitempty"`
+	Type       *string `json:"type" binding:"omitempty,min=1,max=255"`
+	OldVersion int     `json:"oldversion" binding:"required,min=1"`
 }
 
 type UpdateUriReq struct {
@@ -96,6 +97,15 @@ func UpdateConfig(c *gin.Context) {
 			CommonResp: handler.CommonResp{
 				Code: handler.Code_DBErr,
 				Msg:  "数据库查询错误: " + err.Error(),
+			},
+		})
+		return
+	}
+	if req.OldVersion != maxVersion {
+		c.JSON(http.StatusOK, &UpdateConfigResp{
+			CommonResp: handler.CommonResp{
+				Code: handler.Code_Err,
+				Msg:  "当前配置已被更新，请刷新后重试",
 			},
 		})
 		return
